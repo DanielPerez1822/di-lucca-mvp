@@ -1,0 +1,147 @@
+<div class="schedules-page animate-fade-in">
+  <div class="page-header">
+    <div>
+      <h2>Horarios y Slots de Disponibilidad</h2>
+      <p>Configuración semanal de la agenda de los dentistas del Consultorio DI-LUCCA y generación automática de slots</p>
+    </div>
+  </div>
+
+  <!-- Selector de Odontólogo -->
+  <div class="dentist-selector-bar card">
+    <div class="selector-group">
+      <label for="dentistSelect"><i class="ri-user-star-line"></i> Seleccionar Odontólogo / Especialista:</label>
+      <select id="dentistSelect" class="form-control" [ngModel]="selectedDentistId()" (ngModelChange)="selectedDentistId.set($event); onDentistChange()">
+        @for (d of dentists(); track d.id) {
+          <option [value]="d.id">{{ d.firstName }} {{ d.lastName }} ({{ d.email }})</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="grid-layout">
+    <!-- Configuración Semanal del Dentista -->
+    <div class="card schedule-card">
+      <div class="card-header">
+        <h3><i class="ri-calendar-event-line"></i> Configurar Horario Semanal</h3>
+        <p>Define las horas de atención y la duración de cada cita por día de la semana</p>
+      </div>
+
+      @if (successMessage()) {
+        <div class="alert alert-success">
+          <i class="ri-checkbox-circle-line"></i>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+
+      @if (errorMessage()) {
+        <div class="alert alert-danger">
+          <i class="ri-error-warning-line"></i>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <div class="days-list">
+        @for (day of daysConfig; track day.dayOfWeek) {
+          <div class="day-row" [class.active-day]="day.active">
+            <div class="day-toggle">
+              <input type="checkbox" [(ngModel)]="day.active" [id]="'day-' + day.dayOfWeek" />
+              <label [for]="'day-' + day.dayOfWeek">{{ getDayName(day.dayOfWeek) }}</label>
+            </div>
+
+            <div class="time-inputs" *ngIf="day.active">
+              <div class="shift-block">
+                <span class="shift-label">Turno 1:</span>
+                <div class="input-group">
+                  <span>Desde:</span>
+                  <input type="time" class="form-control" [(ngModel)]="day.startTime" />
+                </div>
+                <div class="input-group">
+                  <span>Hasta:</span>
+                  <input type="time" class="form-control" [(ngModel)]="day.endTime" />
+                </div>
+              </div>
+
+              <div class="second-shift-toggle">
+                <label class="checkbox-inline">
+                  <input type="checkbox" [(ngModel)]="day.hasSecondShift" />
+                  <span>+ Segundo Turno (Tarde)</span>
+                </label>
+              </div>
+
+              <div class="shift-block" *ngIf="day.hasSecondShift">
+                <span class="shift-label">Turno 2:</span>
+                <div class="input-group">
+                  <span>Desde:</span>
+                  <input type="time" class="form-control" [(ngModel)]="day.startTime2" />
+                </div>
+                <div class="input-group">
+                  <span>Hasta:</span>
+                  <input type="time" class="form-control" [(ngModel)]="day.endTime2" />
+                </div>
+              </div>
+
+              <div class="input-group">
+                <span>Duración Slot:</span>
+                <select class="form-control" [(ngModel)]="day.slotDurationMinutes">
+                  <option [value]="15">15 Min</option>
+                  <option [value]="30">30 Min</option>
+                  <option [value]="45">45 Min</option>
+                  <option [value]="60">60 Min</option>
+                </select>
+              </div>
+            </div>
+            <div class="inactive-label" *ngIf="!day.active">
+              <span>Día No Laboral / Cerrado</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="card-actions mt-4" style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button class="btn btn-primary" (click)="saveSchedule()" [disabled]="loading()">
+          <i class="ri-save-line"></i>
+          <span>Guardar Configuración Semanal</span>
+        </button>
+        <button class="btn btn-secondary" (click)="copyScheduleToAll()" [disabled]="loading()" style="background: rgba(43, 108, 176, 0.15); color: #2b6cb0; border: 1px solid rgba(43, 108, 176, 0.3);">
+          <i class="ri-file-copy-line"></i>
+          <span>Copiar esta plantilla a TODOS los Odontólogos</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Generación de Slots por Rango de Fechas -->
+    <div class="card slots-card">
+      <div class="card-header">
+        <h3 style="color: var(--secondary);"><i class="ri-time-line"></i> Generador de Slots</h3>
+        <p>Genera los horarios disponibles en la base de datos para la reserva de citas</p>
+      </div>
+
+      @if (genSuccessMessage()) {
+        <div class="alert alert-success">
+          <i class="ri-checkbox-circle-line"></i>
+          <span>{{ genSuccessMessage() }}</span>
+        </div>
+      }
+
+      <div class="form-group">
+        <label class="form-label" for="startDate">Fecha de Inicio *</label>
+        <input id="startDate" type="date" class="form-control" [(ngModel)]="startDate" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="endDate">Fecha de Fin *</label>
+        <input id="endDate" type="date" class="form-control" [(ngModel)]="endDate" />
+      </div>
+
+      <button class="btn btn-primary w-100 mt-3" (click)="generateSlots()" [disabled]="genLoading()">
+        @if (genLoading()) {
+          <i class="ri-loader-4-line spinner"></i>
+          <span>Generando Slots...</span>
+        } @else {
+          <span>Generar Slots de Disponibilidad</span>
+          <i class="ri-flashlight-line"></i>
+        }
+      </button>
+    </div>
+  </div>
+</div>

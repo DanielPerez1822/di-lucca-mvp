@@ -1,0 +1,105 @@
+<div class="appointments-page animate-fade-in">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2>Agendamiento de Citas Odontológicas</h2>
+      <p>Organiza la agenda del consultorio, reagenda y cancela citas con notificación automática por correo</p>
+    </div>
+    <button class="btn btn-primary" (click)="openBookModal()">
+      <i class="ri-calendar-check-line"></i>
+      <span>Agendar Nueva Cita</span>
+    </button>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar card">
+    <div class="filter-group">
+      <label>Filtrar por Fecha:</label>
+      <input type="date" class="form-control" [(ngModel)]="filterDate" (change)="loadAppointments()" />
+    </div>
+
+    <div class="filter-group">
+      <label>Estado de Cita:</label>
+      <select class="form-control" [(ngModel)]="filterStatus" (change)="loadAppointments()">
+        <option value="">Todas las citas</option>
+        <option value="SCHEDULED">Programadas</option>
+        <option value="CONFIRMED">Confirmadas</option>
+        <option value="COMPLETED">Completadas</option>
+        <option value="CANCELLED">Canceladas</option>
+      </select>
+    </div>
+
+    <button class="btn btn-secondary" (click)="clearFilters()">
+      <i class="ri-refresh-line"></i> Limpiar Filtros
+    </button>
+  </div>
+
+  <!-- Appointments Data Table -->
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="ri-loader-4-line spinner"></i>
+      <span>Cargando agenda...</span>
+    </div>
+  } @else if (appointments().length === 0) {
+    <div class="empty-state card">
+      <i class="ri-calendar-event-line"></i>
+      <h3>No hay citas registradas para este filtro</h3>
+      <p>Agenda una nueva cita para el paciente o cambia el rango de fechas.</p>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fecha & Hora</th>
+            <th>Paciente ID</th>
+            <th>Motivo de Consulta</th>
+            <th>Estado</th>
+            <th style="text-align: right;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (appt of appointments(); track appt.id) {
+            <tr>
+              <td>
+                <div class="time-cell">
+                  <strong><i class="ri-calendar-line"></i> {{ appt.date }}</strong>
+                  <span class="time-range">{{ appt.startTime }} - {{ appt.endTime }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="patient-id-badge">{{ appt.patientId.substring(0, 8) }}...</span>
+              </td>
+              <td>{{ appt.reason || 'Consulta General' }}</td>
+              <td>
+                <span [class]="getStatusBadgeClass(appt.status)">
+                  {{ getStatusText(appt.status) }}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <div class="actions-cell" *ngIf="appt.status !== 'CANCELLED' && appt.status !== 'COMPLETED'">
+                  <button class="icon-btn primary" (click)="openRescheduleModal(appt)" title="Reagendar / Cambiar Hora">
+                    <i class="ri-calendar-2-line"></i>
+                  </button>
+                  <button class="icon-btn danger" (click)="onCancel(appt)" title="Cancelar Cita">
+                    <i class="ri-close-circle-line"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Booking / Reschedule Modal -->
+  @if (showFormModal()) {
+    <app-appointment-form
+      [appointment]="selectedAppointment()"
+      [isReschedule]="isReschedule()"
+      (saved)="onAppointmentSaved()"
+      (closed)="closeModal()"
+    ></app-appointment-form>
+  }
+</div>

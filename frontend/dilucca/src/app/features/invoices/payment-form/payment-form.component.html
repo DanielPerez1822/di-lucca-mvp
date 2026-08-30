@@ -1,0 +1,77 @@
+<div class="modal-overlay animate-fade-in" (click)="onClose()">
+  <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Registrar Pago de Factura #{{ invoice?.invoiceNumber }}</h3>
+      <button type="button" class="close-btn" (click)="onClose()"><i class="ri-close-line"></i></button>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert alert-danger">
+        <i class="ri-error-warning-line"></i>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <div class="invoice-summary-box" *ngIf="invoice">
+      <div class="summary-item">
+        <span>Total Factura:</span>
+        <strong>${{ invoice.totalAmount | number:'1.0-0' }} COP</strong>
+      </div>
+      <div class="summary-item">
+        <span>Ya Pagado:</span>
+        <span class="text-success">${{ invoice.paidAmount | number:'1.0-0' }} COP</span>
+      </div>
+      <div class="summary-item">
+        <span>Saldo Pendiente:</span>
+        <strong class="text-danger">${{ (invoice.totalAmount - invoice.paidAmount) | number:'1.0-0' }} COP</strong>
+      </div>
+    </div>
+
+    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" class="mt-3">
+      <div class="form-group">
+        <label class="form-label" for="amount">Monto del Pago ($ COP) *</label>
+        <input id="amount" type="number" step="500" class="form-control" placeholder="100000" formControlName="amount" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="paymentMethod">Medio / Método de Pago *</label>
+        <select id="paymentMethod" class="form-control" formControlName="paymentMethod">
+          <option value="CASH">Efectivo en Caja</option>
+          <option value="CREDIT_CARD">Tarjeta de Crédito</option>
+          <option value="DEBIT_CARD">Tarjeta de Débito</option>
+          <option value="BANK_TRANSFER">Transferencia Bancaria (PSE / Banco)</option>
+          <option value="NEQUI_DAVIPLATA">Nequi / Daviplata</option>
+          <option value="OTHER">Otro Medio</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="referenceNumber">Número de Referencia / Comprobante</label>
+        <input id="referenceNumber" type="text" class="form-control" placeholder="Ej. TRX-987654321 o N° Aprobación" formControlName="referenceNumber" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="notes">NotasAdicionales</label>
+        <input id="notes" type="text" class="form-control" placeholder="Observaciones del pago..." formControlName="notes" />
+      </div>
+
+      <div class="info-alert">
+        <i class="ri-mail-send-line"></i>
+        <span>Al confirmar el pago, se enviará automáticamente la factura y recibo HTML al correo del paciente.</span>
+      </div>
+
+      <div class="modal-footer mt-4">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading() || paymentForm.invalid">
+          @if (loading()) {
+            <i class="ri-loader-4-line spinner"></i>
+            <span>Procesando Pago...</span>
+          } @else {
+            <span>Confirmar Pago y Enviar Recibo</span>
+            <i class="ri-check-double-line"></i>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

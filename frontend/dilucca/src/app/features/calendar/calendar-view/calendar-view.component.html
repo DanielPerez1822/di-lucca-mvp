@@ -1,0 +1,265 @@
+<div class="calendar-page animate-fade-in">
+
+  <!-- Header Superior estilo Mockup -->
+  <div class="calendar-top-header">
+    <div class="header-titles">
+      <h2>Calendario de Citas</h2>
+      <p>Gestiona la agenda de tu clínica para {{ monthYearLabel() }}.</p>
+    </div>
+
+    <div class="header-right-actions">
+      <!-- Navegador de Meses -->
+      <div class="month-navigator">
+        <button class="nav-btn" (click)="navigateMonth(-1)" title="Mes Anterior">
+          <i class="ri-arrow-left-s-line"></i>
+        </button>
+        <span class="current-month-text">{{ monthYearLabel() }}</span>
+        <button class="nav-btn" (click)="navigateMonth(1)" title="Mes Siguiente">
+          <i class="ri-arrow-right-s-line"></i>
+        </button>
+      </div>
+
+      <!-- Botón Nueva Cita (Solo Secretaria o Admin) -->
+      @if (canBook()) {
+        <button class="btn btn-primary btn-new-appointment" (click)="openBookingForm()">
+          <i class="ri-add-line"></i>
+          <span>Nueva Cita</span>
+        </button>
+      }
+
+      <!-- Badge Odontólogo Solo Lectura -->
+      @if (isDentist()) {
+        <div class="read-only-badge">
+          <i class="ri-lock-2-line"></i>
+          <span>Vista Odontólogo (Solo Lectura)</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Layout Principal (Grilla de Calendario + Panel Derecho) -->
+  <div class="calendar-main-layout">
+
+    <!-- Sección Izquierda: Calendario Mensual -->
+    <div class="calendar-card card">
+
+      <!-- Filtro Odontólogo para Secretaria/Admin -->
+      @if (canBook()) {
+        <div class="dentist-filter-bar">
+          <label for="dentistSelect"><i class="ri-user-heart-line"></i> Filtrar por Odontólogo:</label>
+          <select id="dentistSelect" class="form-control select-dentist" [ngModel]="selectedDentistId()" (ngModelChange)="selectedDentistId.set($event); loadMonthAppointments()">
+            <option value="ALL">Todos los Odontólogos</option>
+            @for (d of dentists(); track d.id) {
+              <option [value]="d.id">{{ d.firstName }} {{ d.lastName }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <!-- Días de la semana -->
+      <div class="month-grid-header">
+        <div class="day-head">Sun</div>
+        <div class="day-head">Mon</div>
+        <div class="day-head">Tue</div>
+        <div class="day-head">Wed</div>
+        <div class="day-head">Thu</div>
+        <div class="day-head">Fri</div>
+        <div class="day-head">Sat</div>
+      </div>
+
+      <!-- Grilla de Días Mensuales -->
+      <div class="month-grid-body">
+        @for (dayCell of monthGrid(); track dayCell.date) {
+          <div
+            class="month-day-cell"
+            [class.outside-month]="!dayCell.isCurrentMonth"
+            [class.today]="dayCell.isToday"
+            [class.selected-day]="dayCell.isSelected"
+            (click)="onSelectDay(dayCell)">
+
+            <div class="day-number-badge">{{ dayCell.dayNumber }}</div>
+
+            <!-- Chips de Citas del Día -->
+            <div class="day-appointments-list">
+              @for (appt of dayCell.appointments.slice(0, 3); track appt.id) {
+                <div class="mini-appt-chip appt-chip-occupied" [ngClass]="getTreatmentBadgeClass(appt.reason)">
+                  <span class="occupied-tag">OCUPADO</span>
+                  <span class="chip-time">{{ appt.startTime.substring(0,5) }}</span>
+                  <span class="chip-patient-name" (click)="goToMedicalRecord(appt.patientId, $event)" title="Ver Historia Clínica del Paciente">
+                    {{ getPatientName(appt.patientId) }}
+                  </span>
+                </div>
+              }
+              @if (dayCell.appointments.length > 3) {
+                <div class="more-appts-badge">+{{ dayCell.appointments.length - 3 }} más</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Sección Derecha: Panel Lateral (Tratamientos + Lista de Espera) -->
+    <div class="sidebar-panel">
+
+      <!-- Card 1: Leyenda de Tratamientos -->
+      <div class="card legend-card">
+        <h3>TRATAMIENTOS</h3>
+        <ul class="treatment-legend-list">
+          <li>
+            <span class="dot dot-blue"></span>
+            <span>Limpieza / Profilaxis</span>
+          </li>
+          <li>
+            <span class="dot dot-cyan"></span>
+            <span>Cirugía Dental</span>
+          </li>
+          <li>
+            <span class="dot dot-green"></span>
+            <span>Ortodoncia</span>
+          </li>
+          <li>
+            <span class="dot dot-purple"></span>
+            <span>Consulta / General</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card 2: Citas Registradas del Día Seleccionado -->
+      <div class="card day-appts-card">
+        <div class="waitlist-header">
+          <h3>Citas del Día ({{ selectedDateStr() }})</h3>
+          <span class="waitlist-count">{{ selectedDayAppointments().length }}</span>
+        </div>
+
+        @if (selectedDayAppointments().length === 0) {
+          <div class="empty-day-appts">
+            <i class="ri-calendar-line"></i>
+            <span>Sin citas agendadas para esta fecha</span>
+          </div>
+        } @else {
+          <div class="waitlist-items">
+            @for (appt of selectedDayAppointments(); track appt.id) {
+              <div class="waitlist-item-card appt-sidebar-item">
+                <div class="patient-title-row">
+                  <span class="occupied-sidebar-tag"><i class="ri-checkbox-blank-circle-fill"></i> OCUPADO ({{ appt.startTime.substring(0,5) }})</span>
+                  <span class="treatment-badge" [ngClass]="getTreatmentBadgeClass(appt.reason)">
+                    {{ appt.reason || 'Cita' }}
+                  </span>
+                </div>
+                <div class="patient-name link-hover mt-1" (click)="goToMedicalRecord(appt.patientId, $event)" title="Ver Historia Clínica">
+                  <i class="ri-user-heart-line"></i> Paciente: <strong>{{ getPatientName(appt.patientId) }}</strong>
+                </div>
+                <button class="btn btn-outline-primary btn-assign-shift mt-2" (click)="goToMedicalRecord(appt.patientId, $event)">
+                  <i class="ri-file-list-3-line"></i> Ver Historia Clínica
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Modal / Drawer para Desplegar el Día Seleccionado y Agendar Cita -->
+  @if (showDayDetailsModal()) {
+    <div class="modal-backdrop animate-fade-in">
+      <div class="modal-content day-modal-content">
+        <div class="modal-header">
+          <div>
+            <h3>Detalle de la Agenda — {{ selectedDateStr() }}</h3>
+            <p class="sub-header">Despliegue de franjas horarias y disponibilidad</p>
+          </div>
+          <button class="btn-close" (click)="showDayDetailsModal.set(false)">×</button>
+        </div>
+
+        <div class="modal-body day-modal-body">
+          <div class="day-hourly-schedule">
+            @for (row of hours; track row.time) {
+              <div class="hourly-row">
+                <div class="row-time">{{ row.label }}</div>
+                <div class="row-content">
+
+                  @if (selectedDentistId() === 'ALL') {
+                    @for (dentist of dentists(); track dentist.id) {
+                      <div class="column-dentist-slot">
+                        @if (getAppointmentForSlot(dentist.id, row.time); as appt) {
+                          <div class="appt-card-detail occupied-card" [ngClass]="getTreatmentBadgeClass(appt.reason)">
+                            <div class="appt-detail-header">
+                              <span class="status-occupied-badge"><i class="ri-lock-fill"></i> OCUPADO</span>
+                              <span class="appt-time-badge"><i class="ri-time-line"></i> {{ appt.startTime }} - {{ appt.endTime }}</span>
+                            </div>
+                            <div class="patient-link-row" (click)="goToMedicalRecord(appt.patientId, $event)" title="Ver Historia Clínica">
+                              <i class="ri-user-heart-line"></i>
+                              <span class="patient-label">Paciente:</span>
+                              <strong class="patient-click-name">{{ getPatientName(appt.patientId) }}</strong>
+                              <i class="ri-external-link-line link-icon"></i>
+                            </div>
+                            <div class="appt-reason-text"><strong>Motivo:</strong> {{ appt.reason || 'Consulta' }}</div>
+                          </div>
+                        } @else if (getAvailableSlot(dentist.id, row.time); as slot) {
+                          @if (canBook()) {
+                            <div class="free-slot-btn" (click)="openBookingForm(slot)">
+                              <i class="ri-add-circle-line"></i> Libre {{ dentist.firstName }}
+                            </div>
+                          } @else {
+                            <div class="free-slot-read">Disponible</div>
+                          }
+                        } @else {
+                          <div class="break-slot-text">Receso</div>
+                        }
+                      </div>
+                    }
+                  } @else {
+                    <div class="column-dentist-slot">
+                      @if (getAppointmentForSlot(selectedDentistId(), row.time); as appt) {
+                        <div class="appt-card-detail occupied-card" [ngClass]="getTreatmentBadgeClass(appt.reason)">
+                          <div class="appt-detail-header">
+                            <span class="status-occupied-badge"><i class="ri-lock-fill"></i> OCUPADO</span>
+                            <span class="appt-time-badge"><i class="ri-time-line"></i> {{ appt.startTime }} - {{ appt.endTime }}</span>
+                          </div>
+                          <div class="patient-link-row" (click)="goToMedicalRecord(appt.patientId, $event)" title="Ver Historia Clínica">
+                            <i class="ri-user-heart-line"></i>
+                            <span class="patient-label">Paciente:</span>
+                            <strong class="patient-click-name">{{ getPatientName(appt.patientId) }}</strong>
+                            <i class="ri-external-link-line link-icon"></i>
+                          </div>
+                          <div class="appt-reason-text"><strong>Motivo:</strong> {{ appt.reason || 'Consulta Odontológica' }}</div>
+                        </div>
+                      } @else if (getAvailableSlot(selectedDentistId(), row.time); as slot) {
+                        @if (canBook()) {
+                          <div class="free-slot-btn" (click)="openBookingForm(slot)">
+                            <i class="ri-add-circle-line"></i> Agendar Turno ({{ slot.startTime }})
+                          </div>
+                        } @else {
+                          <div class="free-slot-read">Disponible</div>
+                        }
+                      } @else {
+                        <div class="break-slot-text">Día Cerrado / Receso</div>
+                      }
+                    </div>
+                  }
+
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de Formulario de Reserva -->
+  @if (showAppointmentForm()) {
+    <app-appointment-form
+      [preselectedSlot]="selectedSlotForBooking()"
+      [preselectedDate]="selectedDateStr()"
+      [preselectedDentistId]="selectedDentistId() !== 'ALL' ? selectedDentistId() : null"
+      (saved)="onAppointmentCreated()"
+      (closed)="showAppointmentForm.set(false)">
+    </app-appointment-form>
+  }
+
+</div>

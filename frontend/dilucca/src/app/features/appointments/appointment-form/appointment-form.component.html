@@ -1,0 +1,101 @@
+<div class="modal-overlay animate-fade-in" (click)="onClose()">
+  <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ isReschedule ? 'Reagendar Cita Odontológica' : 'Agendar Nueva Cita' }}</h3>
+      <button type="button" class="close-btn" (click)="onClose()"><i class="ri-close-line"></i></button>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert alert-danger">
+        <i class="ri-error-warning-line"></i>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <!-- Selección de Paciente (solo si es nuevo agendamiento) -->
+        <div class="form-group full-width" *ngIf="!isReschedule">
+          <label class="form-label" for="patientId">Paciente *</label>
+          <select id="patientId" class="form-control" formControlName="patientId">
+            <option value="">-- Selecciona un Paciente --</option>
+            @for (patient of patients(); track patient.id) {
+              <option [value]="patient.id">{{ patient.firstName }} {{ patient.lastName }} — Doc: {{ patient.documentNumber }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Selección de Odontólogo / Especialista -->
+        <div class="form-group">
+          <label class="form-label" for="dentistId">Odontólogo / Especialista *</label>
+          <select id="dentistId" class="form-control" formControlName="dentistId" (change)="onDateOrDentistChange()">
+            <option value="">-- Selecciona un Odontólogo --</option>
+            @for (d of dentists(); track d.id) {
+              <option [value]="d.id">{{ d.firstName }} {{ d.lastName }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Selección de Procedimiento (opcional para calculo de tiempo) -->
+        <div class="form-group" *ngIf="!isReschedule">
+          <label class="form-label" for="procedureId">Procedimiento / Tratamiento</label>
+          <select id="procedureId" class="form-control" formControlName="procedureId">
+            <option value="">-- Selecciona para validar tiempo requerido --</option>
+            @for (proc of procedures(); track proc.id) {
+              <option [value]="proc.id">{{ proc.name }} ({{ proc.duration || proc.durationInMinutes || 30 }} min)</option>
+            }
+          </select>
+        </div>
+
+        <!-- Badge Informativo de Tiempo Requerido -->
+        <div class="form-group full-width" *ngIf="getSelectedProcedure()">
+          <div class="info-badge">
+            <i class="ri-time-line"></i>
+            <span>Tratamiento: <strong>{{ getSelectedProcedure()?.name }}</strong> — Requiere al menos <strong>{{ getSelectedProcedure()?.duration || getSelectedProcedure()?.durationInMinutes }} minutos</strong> contiguos libres.</span>
+          </div>
+        </div>
+
+        <!-- Selección de Fecha para ver Slots disponibles -->
+        <div class="form-group">
+          <label class="form-label" for="selectedDate">Fecha de la Cita *</label>
+          <input id="selectedDate" type="date" class="form-control" formControlName="selectedDate" (change)="onDateOrDentistChange()" />
+        </div>
+
+        <!-- Selección de Slot disponible con Validación de Duración -->
+        <div class="form-group">
+          <label class="form-label" for="slotId">Horario Disponible (Slot) *</label>
+          <select id="slotId" class="form-control" formControlName="slotId">
+            <option value="">-- Selecciona una hora --</option>
+            @for (slot of availableSlots(); track slot.id) {
+              <option
+                [value]="slot.id"
+                [disabled]="!isSlotSufficientForProcedure(slot)"
+              >
+                {{ slot.startTime }} - {{ slot.endTime }}
+                {{ isSlotSufficientForProcedure(slot) ? ' (Disponible ' + getContiguousDurationMinutes(slot) + ' min)' : ' ⚠️ (Insuficiente: solo ' + getContiguousDurationMinutes(slot) + ' min libre)' }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- Motivo de la Cita -->
+        <div class="form-group full-width" *ngIf="!isReschedule">
+          <label class="form-label" for="reason">Notas Adicionales del Motivo</label>
+          <input id="reason" type="text" class="form-control" placeholder="Ej. Presenta sensibilidad en molar superior..." formControlName="reason" />
+        </div>
+      </div>
+
+      <div class="modal-footer mt-4">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading() || bookingForm.invalid">
+          @if (loading()) {
+            <i class="ri-loader-4-line spinner"></i>
+            <span>{{ isReschedule ? 'Reagendando...' : 'Agendando...' }}</span>
+          } @else {
+            <span>{{ isReschedule ? 'Confirmar Reagendamiento' : 'Confirmar Cita' }}</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

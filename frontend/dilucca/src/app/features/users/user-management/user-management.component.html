@@ -1,0 +1,316 @@
+<div class="user-management-page animate-fade-in">
+
+  <!-- Alert Banner Success -->
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      <i class="ri-checkbox-circle-fill"></i>
+      <span>{{ successMessage() }}</span>
+    </div>
+  }
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><i class="ri-user-settings-line"></i> Gestión de Usuarios y Personal</h1>
+      <p class="page-subtitle">Administración de cuentas para Odontólogos y Asistentes del Consultorio DI-LUCCA</p>
+    </div>
+    <button class="btn btn-primary btn-add-user" (click)="openCreateModal()">
+      <i class="ri-user-add-line"></i> Crear Nuevo Usuario
+    </button>
+  </div>
+
+  <!-- Main Card -->
+  <div class="card content-card">
+
+    <!-- Filters & Search Toolbar -->
+    <div class="toolbar-section">
+      <div class="search-box">
+        <i class="ri-search-line search-icon"></i>
+        <input
+          type="text"
+          class="form-control search-input"
+          placeholder="Buscar por nombre, correo o documento..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+        />
+      </div>
+
+      <div class="filter-box">
+        <label><i class="ri-filter-3-line"></i> Filtrar por Rol:</label>
+        <select
+          class="form-select filter-select"
+          [ngModel]="selectedRoleFilter()"
+          (ngModelChange)="selectedRoleFilter.set($event)">
+          <option value="ALL">Todos los Roles</option>
+          <option value="DENTIST">Odontólogos</option>
+          <option value="SECRETARY_ASSISTANT">Asistentes / Secretarias</option>
+          <option value="ADMIN">Administradores</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    @if (loading()) {
+      <div class="loading-state">
+        <i class="ri-loader-4-line spin-icon"></i>
+        <span>Cargando lista de usuarios...</span>
+      </div>
+    } @else if (filteredUsers().length === 0) {
+      <div class="empty-state">
+        <i class="ri-user-search-line empty-icon"></i>
+        <h3>No se encontraron usuarios</h3>
+        <p>Intente cambiando los términos de búsqueda o filtros.</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Documento</th>
+              <th>Teléfono</th>
+              <th>Rol / Cargo</th>
+              <th>Estado</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of filteredUsers(); track user.id) {
+              <tr [class.inactive-row]="!user.active">
+                <td>
+                  <div class="user-profile-cell">
+                    <div class="avatar-circle" [ngClass]="getRoleBadgeClass(user.roles[0])">
+                      {{ user.firstName.substring(0,1) }}{{ user.lastName.substring(0,1) }}
+                    </div>
+                    <div class="user-name-info">
+                      <strong class="user-full-name">{{ user.firstName }} {{ user.lastName }}</strong>
+                      <span class="user-email-text">{{ user.email }}</span>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="doc-text">{{ user.documentNumber || '—' }}</span>
+                </td>
+
+                <td>
+                  <span class="phone-text">{{ user.phone || '—' }}</span>
+                </td>
+
+                <td>
+                  <div class="roles-badges">
+                    @for (r of user.roles; track r) {
+                      <span class="badge-role" [ngClass]="getRoleBadgeClass(r)">
+                        <i [class]="r === 'ADMIN' ? 'ri-shield-user-line' : (r === 'DENTIST' ? 'ri-stethoscope-line' : 'ri-user-heart-line')"></i>
+                        {{ getRoleLabel(r) }}
+                      </span>
+                    }
+                  </div>
+                </td>
+
+                <td>
+                  @if (user.active) {
+                    <span class="status-chip status-active"><i class="ri-checkbox-blank-circle-fill"></i> Activo</span>
+                  } @else {
+                    <span class="status-chip status-inactive"><i class="ri-indeterminate-circle-fill"></i> Inactivo</span>
+                  }
+                </td>
+
+                <td class="text-end">
+                  <div class="action-buttons">
+                    <button class="btn btn-icon btn-edit" (click)="openEditModal(user)" title="Editar información">
+                      <i class="ri-edit-line"></i> Editar
+                    </button>
+
+                    @if (!user.roles.includes('ADMIN')) {
+                      <button
+                        class="btn btn-icon"
+                        [class.btn-deactivate]="user.active"
+                        [class.btn-activate]="!user.active"
+                        (click)="toggleUserStatus(user)"
+                        [title]="user.active ? 'Desactivar Usuario' : 'Activar Usuario'">
+                        <i [class]="user.active ? 'ri-user-unfollow-line' : 'ri-user-follow-line'"></i>
+                        {{ user.active ? 'Desactivar' : 'Activar' }}
+                      </button>
+                    } @else {
+                      <span class="admin-protected-tag" title="Administrador Principal (No editable)"><i class="ri-lock-line"></i> Protegido</span>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+  </div>
+
+</div>
+
+<!-- Modal para Crear / Editar Usuario -->
+@if (showModal()) {
+  <div class="modal-backdrop animate-fade-in">
+    <div class="modal-content user-modal-content">
+      <div class="modal-header">
+        <div>
+          <h3>{{ isEditing() ? 'Editar Usuario' : 'Registrar Nuevo Usuario' }}</h3>
+          <p class="modal-subtitle">Asignación de datos personales y rol laboral</p>
+        </div>
+        <button class="btn-close" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+
+        @if (errorMessage()) {
+          <div class="alert alert-danger mb-3">
+            <i class="ri-error-warning-line"></i>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <div class="admin-warning-box mb-3">
+          <i class="ri-information-line"></i>
+          <span>Solo se pueden registrar usuarios de tipo <strong>Odontólogo</strong> o <strong>Asistente / Secretaria</strong>. El sistema cuenta con 1 Administrador único.</span>
+        </div>
+
+        <form (ngSubmit)="saveUser()" #userForm="ngForm">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label required">Nombre</label>
+              <input
+                type="text"
+                class="form-control"
+                required
+                placeholder="Ej. Carlos"
+                [ngModel]="formFirstName()"
+                (ngModelChange)="formFirstName.set($event)"
+                name="firstName"
+              />
+            </div>
+
+            <div class="form-group col-md-6">
+              <label class="form-label required">Apellido</label>
+              <input
+                type="text"
+                class="form-control"
+                required
+                placeholder="Ej. Mendoza"
+                [ngModel]="formLastName()"
+                (ngModelChange)="formLastName.set($event)"
+                name="lastName"
+              />
+            </div>
+          </div>
+
+          <div class="form-row mt-3">
+            <div class="form-group col-md-6">
+              <label class="form-label required">Correo Electrónico</label>
+              <input
+                type="email"
+                class="form-control"
+                required
+                [disabled]="isEditing()"
+                placeholder="ejemplo@dilucca.com"
+                [ngModel]="formEmail()"
+                (ngModelChange)="formEmail.set($event)"
+                name="email"
+              />
+            </div>
+
+            @if (!isEditing()) {
+              <div class="form-group col-md-6">
+                <label class="form-label required">Contraseña Acceso</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  required
+                  placeholder="Mínimo 8 caracteres"
+                  [ngModel]="formPassword()"
+                  (ngModelChange)="formPassword.set($event)"
+                  name="password"
+                />
+              </div>
+            } @else {
+              <div class="form-group col-md-6">
+                <label class="form-label">Número de Documento</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Ej. 1000000002"
+                  [ngModel]="formDocumentNumber()"
+                  (ngModelChange)="formDocumentNumber.set($event)"
+                  name="documentNumber"
+                />
+              </div>
+            }
+          </div>
+
+          <div class="form-row mt-3">
+            @if (!isEditing()) {
+              <div class="form-group col-md-6">
+                <label class="form-label">Número de Documento</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Ej. 1000000002"
+                  [ngModel]="formDocumentNumber()"
+                  (ngModelChange)="formDocumentNumber.set($event)"
+                  name="documentNumber"
+                />
+              </div>
+            }
+
+            <div class="form-group col-md-6">
+              <label class="form-label">Teléfono Móvil</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Ej. +57 3100000000"
+                [ngModel]="formPhone()"
+                (ngModelChange)="formPhone.set($event)"
+                name="phone"
+              />
+            </div>
+
+            <div class="form-group col-md-6">
+              <label class="form-label required">Rol / Cargo En Consultorio</label>
+              <select
+                class="form-select"
+                required
+                [ngModel]="formRole()"
+                (ngModelChange)="formRole.set($event)"
+                name="role">
+                <option value="DENTIST">🩺 Odontólogo / Especialista</option>
+                <option value="SECRETARY_ASSISTANT">📋 Asistente / Secretaria</option>
+              </select>
+            </div>
+          </div>
+
+          @if (isEditing()) {
+            <div class="form-group mt-3">
+              <label class="checkbox-container">
+                <input
+                  type="checkbox"
+                  [ngModel]="formActive()"
+                  (ngModelChange)="formActive.set($event)"
+                  name="active"
+                />
+                <span class="checkmark"></span>
+                <span>Cuenta de usuario Activa</span>
+              </label>
+            </div>
+          }
+
+          <div class="modal-footer mt-4">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="ri-save-line"></i> {{ isEditing() ? 'Guardar Cambios' : 'Crear Usuario' }}
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+}

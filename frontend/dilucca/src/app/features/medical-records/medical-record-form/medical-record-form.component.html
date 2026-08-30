@@ -1,0 +1,88 @@
+<div class="modal-overlay animate-fade-in" (click)="onClose()">
+  <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Registrar Atención Odontológica</h3>
+      <button type="button" class="close-btn" (click)="onClose()"><i class="ri-close-line"></i></button>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert alert-danger">
+        <i class="ri-error-warning-line"></i>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <form [formGroup]="recordForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label class="form-label" for="patientId">Paciente *</label>
+          <select id="patientId" class="form-control" formControlName="patientId">
+            <option value="">-- Selecciona un Paciente --</option>
+            @for (patient of patients(); track patient.id) {
+              <option [value]="patient.id">{{ patient.firstName }} {{ patient.lastName }} (Doc: {{ patient.documentNumber }})</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label" for="diagnosis">Diagnóstico Clínico *</label>
+          <textarea id="diagnosis" class="form-control" rows="2" placeholder="Ej. Caries oclusal en molar 36 y gingivitis leve..." formControlName="diagnosis"></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label" for="notes">Notas y Observaciones del Dentista</label>
+          <textarea id="notes" class="form-control" rows="2" placeholder="Procedimiento realizado sin complicaciones, se formula profilaxis..." formControlName="notes"></textarea>
+        </div>
+      </div>
+
+      <!-- Procedimientos Aplicados -->
+      <div class="procedures-section mt-3">
+        <div class="section-header">
+          <h4>Procedimientos / Tratamientos Realizados</h4>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="addItem()">
+            <i class="ri-add-line"></i> Agregar Procedimiento
+          </button>
+        </div>
+
+        <div class="items-list" formArrayName="items">
+          @for (itemGroup of itemsFormArray.controls; track $index) {
+            <div [formGroupName]="$index" class="item-row">
+              <div class="form-group flex-2">
+                <select class="form-control" formControlName="procedureId" (change)="onProcedureSelect($index)">
+                  <option value="">-- Procedimiento --</option>
+                  @for (proc of procedures(); track proc.id) {
+                    <option [value]="proc.id">{{ proc.name }} (${{ proc.price }})</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-group flex-1">
+                <input type="number" class="form-control" placeholder="Cobrado $" formControlName="appliedPrice" />
+              </div>
+
+              <div class="form-group flex-1">
+                <input type="number" class="form-control" placeholder="Diente N°" formControlName="toothNumber" />
+              </div>
+
+              <button type="button" class="icon-btn danger" (click)="removeItem($index)" title="Quitar">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer mt-4">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading() || recordForm.invalid">
+          @if (loading()) {
+            <i class="ri-loader-4-line spinner"></i>
+            <span>Guardando Atención...</span>
+          } @else {
+            <span>Guardar en Historia Clínica</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

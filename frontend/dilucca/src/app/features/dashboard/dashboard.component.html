@@ -1,0 +1,118 @@
+<div class="dashboard-page animate-fade-in">
+  <!-- Welcome Hero Banner -->
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h1>¡Bienvenido de nuevo, {{ userFirstName() }}! 👋</h1>
+      <p>Panel de control del Consultorio Dental DI-LUCCA. Gestiona tus citas, pacientes y registros clínicos fácilmente.</p>
+    </div>
+    <div class="hero-badge">
+      <i class="ri-heart-pulse-fill"></i>
+      <span>DI-LUCCA System Active</span>
+    </div>
+  </div>
+
+  <!-- Quick Metrics Cards -->
+  <div class="metrics-grid">
+    <div class="metric-card card">
+      <div class="metric-icon primary">
+        <i class="ri-user-heart-line"></i>
+      </div>
+      <div class="metric-data">
+        <span class="label">Pacientes Registrados</span>
+        <h3>Gestión Activa</h3>
+      </div>
+    </div>
+
+    <div class="metric-card card">
+      <div class="metric-icon secondary">
+        <i class="ri-pulse-line"></i>
+      </div>
+      <div class="metric-data">
+        <span class="label">Catálogo Dental</span>
+        <h3>9 Procedimientos</h3>
+      </div>
+    </div>
+
+    <div class="metric-card card">
+      <div class="metric-icon accent">
+        <i class="ri-calendar-check-line"></i>
+      </div>
+      <div class="metric-data">
+        <span class="label">Horarios & Disponibilidad</span>
+        <h3>Slots en Tiempo Real</h3>
+      </div>
+    </div>
+
+    <div class="metric-card card">
+      <div class="metric-icon success">
+        <i class="ri-refund-2-line"></i>
+      </div>
+      <div class="metric-data">
+        <span class="label">Facturación & Pagos</span>
+        <h3>Recibos por Correo</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Access Module Cards -->
+  <div class="section-title mt-4">
+    <h2>Módulos del Sistema</h2>
+    <p>Selecciona una opción para comenzar a trabajar</p>
+  </div>
+
+  <div class="modules-grid">
+    <a routerLink="/patients" class="module-card card">
+      <div class="module-header">
+        <div class="icon-box"><i class="ri-user-add-line"></i></div>
+        <i class="ri-arrow-right-up-line link-icon"></i>
+      </div>
+      <h3>Registro de Pacientes</h3>
+      <p>Creación, edición y listado de pacientes de la clínica.</p>
+    </a>
+
+    <a routerLink="/procedures" class="module-card card">
+      <div class="module-header">
+        <div class="icon-box"><i class="ri-health-book-line"></i></div>
+        <i class="ri-arrow-right-up-line link-icon"></i>
+      </div>
+      <h3>Procedimientos Dentales</h3>
+      <p>Catálogo de tarifas, duraciones y descripción de servicios.</p>
+    </a>
+
+    <a routerLink="/schedules" class="module-card card">
+      <div class="module-header">
+        <div class="icon-box"><i class="ri-calendar-event-line"></i></div>
+        <i class="ri-arrow-right-up-line link-icon"></i>
+      </div>
+      <h3>Horarios de Odontólogos</h3>
+      <p>Configuración semanal de agenda y generación automática de slots.</p>
+    </a>
+
+    <a routerLink="/appointments" class="module-card card">
+      <div class="module-header">
+        <div class="icon-box"><i class="ri-time-line"></i></div>
+        <i class="ri-arrow-right-up-line link-icon"></i>
+      </div>
+      <h3>Agendamiento de Citas</h3>
+      <p>Reserva, reagendamiento y notificación por email al paciente.</p>
+    </a>
+
+    <a routerLink="/medical-records" class="module-card card">
+      <div class="module-header">
+        <div class="icon-box"><i class="ri-file-text-line"></i></div>
+        <i class="ri-arrow-right-up-line link-icon"></i>
+      </div>
+      <h3>Historial Médico Clínico</h3>
+      <p>Registro de atenciones, odontograma por diente y diagnósticos.</p>
+    </a>
+
+    <a routerLink="/invoices" class="module-card card">
+      <div class="module-header">
+        <div class="icon-box"><i class="ri-cash-line"></i></div>
+        <i class="ri-arrow-right-up-line link-icon"></i>
+      </div>
+      <h3>Facturación y Pagos</h3>
+      <p>Recibos en efectivo, tarjeta, transferencia y envío de PDF/HTML por correo.</p>
+    </a>
+  </div>
+</div>

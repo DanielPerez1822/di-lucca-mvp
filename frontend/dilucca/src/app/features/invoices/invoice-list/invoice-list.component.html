@@ -1,0 +1,135 @@
+<div class="invoices-page animate-fade-in">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2>Facturación y Pagos</h2>
+      <p>Gestión de facturas clínicas, registro de pagos y envío de comprobante HTML al correo del paciente</p>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar card">
+    <div class="filter-group">
+      <label>Estado de Factura:</label>
+      <select class="form-control" [(ngModel)]="filterStatus" (change)="loadInvoices()">
+        <option value="">Todas las facturas</option>
+        <option value="PENDING">Pendiente de Pago</option>
+        <option value="PARTIALLY_PAID">Pago Parcial</option>
+        <option value="PAID">Pagada Totalmente</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Invoices Table -->
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="ri-loader-4-line spinner"></i>
+      <span>Cargando facturas...</span>
+    </div>
+  } @else if (invoices().length === 0) {
+    <div class="empty-state card">
+      <i class="ri-refund-2-line"></i>
+      <h3>No hay facturas registradas</h3>
+      <p>Genera facturas desde las atenciones médicas realizadas en el sistema.</p>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>N° Factura</th>
+            <th>Fecha de Emisión</th>
+            <th>Monto Total</th>
+            <th>Monto Pagado</th>
+            <th>Estado</th>
+            <th style="text-align: right;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (inv of invoices(); track inv.id) {
+            <tr>
+              <td>
+                <strong class="invoice-num"><i class="ri-file-text-line"></i> {{ inv.invoiceNumber }}</strong>
+              </td>
+              <td>{{ inv.issueDate | date:'mediumDate' }}</td>
+              <td><strong>${{ inv.totalAmount | number:'1.0-0' }} COP</strong></td>
+              <td class="text-success">${{ inv.paidAmount | number:'1.0-0' }} COP</td>
+              <td>
+                <span [class]="getStatusBadgeClass(inv.status)">
+                  {{ getStatusText(inv.status) }}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <div class="actions-cell">
+                  <button class="btn btn-primary btn-sm" *ngIf="inv.status !== 'PAID'" (click)="openPaymentModal(inv)">
+                    <i class="ri-cash-line"></i> Registrar Pago
+                  </button>
+                  <button class="icon-btn secondary" (click)="openEditModal(inv)" title="Editar Estado y Monto Pagado">
+                    <i class="ri-edit-line"></i>
+                  </button>
+                  <button class="icon-btn secondary" (click)="sendEmail(inv)" title="Reenviar Recibo HTML al Correo">
+                    <i class="ri-mail-send-line"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Payment Modal Component -->
+  @if (showPaymentModal()) {
+    <app-payment-form
+      [invoice]="selectedInvoice()"
+      (saved)="onPaymentSaved()"
+      (closed)="closeModal()"
+    ></app-payment-form>
+  }
+
+  <!-- Edit Invoice Modal -->
+  @if (showEditModal() && editInvoiceTarget()) {
+    <div class="modal-overlay" (click)="closeEditModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3><i class="ri-edit-line"></i> Editar Factura {{ editInvoiceTarget()?.invoiceNumber }}</h3>
+          <button class="close-btn" (click)="closeEditModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Monto Total (Fijo):</label>
+            <input type="text" class="form-control" [value]="'$' + (editInvoiceTarget()?.totalAmount | number:'1.0-0') + ' COP'" disabled />
+            <small class="help-text">El monto total de la factura es fijo.</small>
+          </div>
+
+          <div class="form-group">
+            <label>Monto Pagado (Editable):</label>
+            <input type="number" class="form-control" [(ngModel)]="editPaidAmount" min="0" />
+            <small class="help-text">Ajusta el monto total acumulado que el paciente ha pagado.</small>
+          </div>
+
+          <div class="form-group">
+            <label>Estado de la Factura (Editable):</label>
+            <select class="form-control" [(ngModel)]="editStatus">
+              <option value="PENDING">PENDIENTE DE PAGO</option>
+              <option value="PARTIALLY_PAID">PAGO PARCIAL</option>
+              <option value="PAID">PAGADA TOTALMENTE</option>
+              <option value="CANCELLED">CANCELADA</option>
+            </select>
+          </div>
+
+          <p class="email-notice">
+            <i class="ri-mail-check-line"></i> Al guardar, se reenviará el comprobante actualizado por correo al paciente.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeEditModal()" [disabled]="savingEdit()">Cancelar</button>
+          <button class="btn btn-primary" (click)="saveInvoiceUpdate()" [disabled]="savingEdit()">
+            <i class="ri-save-line"></i> {{ savingEdit() ? 'Guardando...' : 'Guardar y Notificar por Correo' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

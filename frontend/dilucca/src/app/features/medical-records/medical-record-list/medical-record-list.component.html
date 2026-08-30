@@ -1,0 +1,134 @@
+<div class="medical-records-page animate-fade-in">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2>Historia Clínica Odontológica</h2>
+      <p>Consulta de expedientes, diagnósticos clínicos y tratamientos registrados en DI-LUCCA</p>
+    </div>
+    @if (canCreateRecord()) {
+      <button class="btn btn-primary" (click)="openCreateModal()">
+        <i class="ri-file-add-line"></i>
+        <span>Registrar Atención Médica</span>
+      </button>
+    } @else {
+      <span class="read-only-badge" title="Solo el Odontólogo o el Administrador pueden registrar atención médica">
+        <i class="ri-eye-line"></i> Modo Consulta
+      </span>
+    }
+  </div>
+
+  <!-- Patient Selector & Search Filter -->
+  <div class="filter-bar card">
+    <div class="patient-search-wrapper">
+      <div class="search-input-group">
+        <label class="form-label" for="patientSearch">Buscar Paciente:</label>
+        <input
+          id="patientSearch"
+          type="text"
+          class="form-control"
+          placeholder="Escribe el nombre, apellido o documento del paciente..."
+          [(ngModel)]="patientSearchQuery"
+        />
+      </div>
+
+      <div class="patient-selector">
+        <label class="form-label" for="selectedPatientId">Seleccionar Paciente ({{ filteredPatients().length }} encontrados):</label>
+        <select id="selectedPatientId" class="form-control" [(ngModel)]="selectedPatientId" (change)="loadHistory()">
+          <option value="">-- Selecciona un Paciente para ver su Historia Clínica --</option>
+          @for (patient of filteredPatients(); track patient.id) {
+            <option [value]="patient.id">{{ patient.firstName }} {{ patient.lastName }} — Doc: {{ patient.documentNumber }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline of Medical Records -->
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="ri-loader-4-line spinner"></i>
+      <span>Cargando historia clínica...</span>
+    </div>
+  } @else if (!selectedPatientId) {
+    <div class="empty-state card">
+      <i class="ri-user-search-line"></i>
+      <h3>Selecciona un Paciente</h3>
+      <p>Por favor selecciona un paciente arriba para desplegar su historia clínica cronológica.</p>
+    </div>
+  } @else if (records().length === 0) {
+    <div class="empty-state card">
+      <i class="ri-file-list-3-line"></i>
+      <h3>El paciente no tiene consultas registradas</h3>
+      <p>Haz clic en "Registrar Atención Médica" para ingresar la primera consulta del paciente.</p>
+    </div>
+  } @else {
+    <div class="timeline">
+      @for (record of records(); track record.id) {
+        <div class="timeline-item card">
+          <div class="record-header">
+            <div class="entry-date">
+              <i class="ri-calendar-line"></i>
+              <strong>{{ record.entryDate | date:'fullDate':'':'es-CO' }}</strong>
+            </div>
+            <div class="header-right">
+              <button class="btn btn-secondary btn-sm" (click)="generateInvoice(record)" title="Generar / Ver Factura de esta atención">
+                <i class="ri-receipt-line"></i> Generar Factura
+              </button>
+              <div class="total-tag">
+                Total: ${{ record.totalAmount | number:'1.0-0' }} COP
+              </div>
+            </div>
+          </div>
+
+          <div class="record-body">
+            <div class="diagnosis-box">
+              <h4>Diagnóstico Clínico:</h4>
+              <p>{{ record.diagnosis }}</p>
+            </div>
+
+            @if (record.notes) {
+              <div class="notes-box">
+                <h4>Observaciones del Odontólogo:</h4>
+                <p>{{ record.notes }}</p>
+              </div>
+            }
+
+            <!-- Tabla de Procedimientos Aplicados -->
+            @if (record.items && record.items.length > 0) {
+              <div class="items-table-wrapper">
+                <h4>Procedimientos y Tratamientos Realizados:</h4>
+                <table class="table inner-table">
+                  <thead>
+                    <tr>
+                      <th>Procedimiento</th>
+                      <th>Diente N°</th>
+                      <th>Costo Cobrado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of record.items; track item.id) {
+                      <tr>
+                        <td><strong>{{ item.procedureName }}</strong></td>
+                        <td>{{ item.toothNumber ? 'Diente ' + item.toothNumber : 'General / N/A' }}</td>
+                        <td>${{ item.appliedPrice | number:'1.0-0' }} COP</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal Form Component -->
+  @if (showFormModal()) {
+    <app-medical-record-form
+      [patientId]="selectedPatientId"
+      (saved)="onRecordSaved()"
+      (closed)="closeModal()"
+    ></app-medical-record-form>
+  }
+</div>

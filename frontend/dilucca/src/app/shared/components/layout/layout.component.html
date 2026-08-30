@@ -1,0 +1,95 @@
+<div class="app-layout">
+  <!-- Sidebar Nav -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-logo">
+        <i class="ri-tooth-fill"></i>
+      </div>
+      <div class="brand-text">
+        <h2>DI-LUCCA</h2>
+        <span>Consultorio Dental</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <i class="ri-dashboard-3-line"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a routerLink="/patients" routerLinkActive="active" class="nav-item">
+        <i class="ri-user-heart-line"></i>
+        <span>Pacientes</span>
+      </a>
+
+      <a routerLink="/procedures" routerLinkActive="active" class="nav-item">
+        <i class="ri-pulse-line"></i>
+        <span>Procedimientos</span>
+      </a>
+
+      <a routerLink="/calendar" routerLinkActive="active" class="nav-item">
+        <i class="ri-calendar-2-line"></i>
+        <span>Calendario y Citas</span>
+      </a>
+
+      @if (isAdmin()) {
+        <a routerLink="/schedules" routerLinkActive="active" class="nav-item">
+          <i class="ri-calendar-event-line"></i>
+          <span>Horarios y Slots</span>
+        </a>
+      }
+
+      <a routerLink="/medical-records" routerLinkActive="active" class="nav-item">
+        <i class="ri-file-list-3-line"></i>
+        <span>Historia Clínica</span>
+      </a>
+
+      <a routerLink="/invoices" routerLinkActive="active" class="nav-item">
+        <i class="ri-refund-2-line"></i>
+        <span>Facturación y Pagos</span>
+      </a>
+
+      @if (isAdmin()) {
+        <a routerLink="/user-management" routerLinkActive="active" class="nav-item nav-admin-item">
+          <i class="ri-user-settings-line"></i>
+          <span>Gestión de Usuarios</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar">{{ userInitials() }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ userName() }}</span>
+          <span class="user-role badge badge-info">{{ userRole() }}</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="onLogout()" title="Cerrar Sesión">
+        <i class="ri-logout-box-r-line"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <!-- Top Navbar -->
+    <header class="top-navbar">
+      <div class="navbar-title">
+        <h3>Consultorio Dental DI-LUCCA</h3>
+      </div>
+      <div class="navbar-actions">
+        <span class="system-time"><i class="ri-time-line"></i> {{ currentTime }}</span>
+        <div class="profile-chip">
+          <i class="ri-user-smile-line"></i>
+          <span>{{ userName() }}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Body Router Outlet -->
+    <main class="content-body">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,676 @@
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header Superior estilo Mockup */
+.calendar-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.header-titles h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.header-titles p {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin: 4px 0 0 0;
+}
+
+.header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.month-navigator {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 12px;
+  gap: 16px;
+}
+
+.current-month-text {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.btn-new-appointment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-new-appointment:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.read-only-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+}
+
+/* Layout Principal Grid + Panel Lateral */
+.calendar-main-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .calendar-main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card del Calendario Izquierda */
+.calendar-card {
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.dentist-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.select-dentist {
+  max-width: 300px;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+/* Grilla de Calendario Mensual */
+.month-grid-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 10px 0;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.day-head {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.month-grid-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 115px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.month-day-cell {
+  height: 115px;
+  max-height: 115px;
+  box-sizing: border-box;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.month-day-cell:nth-child(7n) {
+  border-right: none;
+}
+
+.month-day-cell:hover {
+  background: #f0f9ff;
+}
+
+.month-day-cell.outside-month {
+  background: #f8fafc;
+  color: #cbd5e1;
+}
+
+.month-day-cell.today .day-number-badge {
+  background: #0284c7;
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.month-day-cell.selected-day {
+  border: 2px solid #0284c7 !important;
+  background: #e0f2fe;
+}
+
+.day-number-badge {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #334155;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+/* Chips de Citas */
+.day-appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 78px;
+  overflow: hidden;
+}
+
+.mini-appt-chip {
+  height: 22px;
+  max-height: 22px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-cyan {
+  background: #cff4fc;
+  color: #055160;
+}
+
+.badge-green {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-purple {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.more-appts-badge {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Panel Lateral Derecho */
+.sidebar-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.legend-card, .waitlist-card {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.legend-card h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #475569;
+  margin: 0 0 16px 0;
+}
+
+.treatment-legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.treatment-legend-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot-blue { background: #3b82f6; }
+.dot-cyan { background: #06b6d4; }
+.dot-green { background: #10b981; }
+.dot-purple { background: #a855f7; }
+
+/* Lista de Espera */
+.waitlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.waitlist-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.waitlist-count {
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.waitlist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.waitlist-item-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.patient-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.patient-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.treatment-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.preference-text {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.btn-assign-shift {
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0284c7;
+  border: 1px solid #0284c7;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-assign-shift:hover {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+/* Modales y Despliegue de Día */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.day-modal-content {
+  width: 90%;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-modal-content {
+  width: 90%;
+  max-width: 600px;
+  background: #ffffff;
+  border-radius: 16px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.sub-header {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.day-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.day-hourly-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hourly-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 8px;
+}
+
+.row-time {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.row-content {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.column-dentist-slot {
+  flex: 1;
+  min-width: 160px;
+}
+
+.free-slot-btn {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px dashed #22c55e;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.free-slot-btn:hover {
+  background: #dcfce7;
+}
+
+.free-slot-read {
+  background: #f8fafc;
+  color: #94a3b8;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.break-slot-text {
+  background: #f1f5f9;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-style: italic;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.appt-card-detail {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.appt-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  opacity: 0.9;
+}
+
+.appt-time-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}
+
+.patient-link-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  width: fit-content;
+}
+
+.patient-link-row:hover {
+  background: #ffffff;
+  transform: translateX(2px);
+}
+
+.patient-click-name {
+  color: #0f172a;
+  text-decoration: underline;
+  font-size: 0.88rem;
+}
+
+.link-icon {
+  font-size: 0.8rem;
+  color: #0284c7;
+}
+
+.day-appts-card {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.empty-day-appts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.link-hover {
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.link-hover:hover {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+.appt-sidebar-item {
+  border-left: 3px solid #e11d48;
+}
+
+.occupied-tag {
+  background: #ffe4e6;
+  color: #e11d48;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 3px;
+  letter-spacing: 0.4px;
+}
+
+.status-occupied-badge {
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.occupied-sidebar-tag {
+  color: #e11d48;
+  font-weight: 700;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.patient-label {
+  font-weight: 500;
+  color: #475569;
+  font-size: 0.82rem;
+}
+
+.chip-patient-name {
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.chip-patient-name:hover {
+  text-decoration: underline;
+  color: #0284c7;
+}

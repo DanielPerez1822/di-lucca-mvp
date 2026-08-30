@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: odontosys-db
+    environment:
+      POSTGRES_DB: odontosys
+      POSTGRES_USER: odontosys
+      POSTGRES_PASSWORD: odontosys
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

@@ -1,0 +1,88 @@
+<div class="procedures-page animate-fade-in">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2>Catálogo de Procedimientos Dentales</h2>
+      <p>Servicios, duraciones y precios base para atención en el Consultorio Dental DI-LUCCA</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="ri-pulse-line"></i>
+      <span>Nuevo Procedimiento</span>
+    </button>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="filter-bar card">
+    <div class="search-box">
+      <i class="ri-search-line search-icon"></i>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar procedimiento por nombre o descripción..."
+        [(ngModel)]="searchQuery"
+      />
+    </div>
+    <div class="active-filter">
+      <label>
+        <input type="checkbox" [(ngModel)]="activeOnly" />
+        <span>Solo Procedimientos Activos</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Procedures Cards Grid -->
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="ri-loader-4-line spinner"></i>
+      <span>Cargando catálogo...</span>
+    </div>
+  } @else if (filteredProcedures().length === 0) {
+    <div class="empty-state card">
+      <i class="ri-health-book-line"></i>
+      <h3>No se encontraron procedimientos</h3>
+      <p>Registra un nuevo procedimiento dental para agregarlo al catálogo.</p>
+    </div>
+  } @else {
+    <div class="procedures-grid">
+      @for (procedure of filteredProcedures(); track procedure.id) {
+        <div class="procedure-card card" [class.inactive-card]="!procedure.active">
+          <div class="card-header">
+            <span class="price-badge">${{ procedure.price | number:'1.0-0' }} COP</span>
+            <span [class]="procedure.active ? 'badge badge-success' : 'badge badge-danger'">
+              {{ procedure.active ? 'ACTIVO' : 'INACTIVO' }}
+            </span>
+          </div>
+
+          <div class="card-body">
+            <h3>{{ procedure.name }}</h3>
+            <p>{{ procedure.description }}</p>
+          </div>
+
+          <div class="card-footer">
+            <div class="duration-tag">
+              <i class="ri-time-line"></i>
+              <span>{{ procedure.duration || procedure.durationInMinutes || 30 }} Minutos</span>
+            </div>
+            <div class="actions">
+              <button class="icon-btn primary" (click)="openEditModal(procedure)" title="Editar Procedimiento">
+                <i class="ri-pencil-line"></i>
+              </button>
+              <button class="icon-btn danger" *ngIf="procedure.active" (click)="onDeactivate(procedure)" title="Desactivar Procedimiento">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal Form -->
+  @if (showFormModal()) {
+    <app-procedure-form
+      [procedure]="selectedProcedure()"
+      (saved)="onProcedureSaved()"
+      (closed)="closeModal()"
+    ></app-procedure-form>
+  }
+</div>

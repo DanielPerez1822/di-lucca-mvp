@@ -1,0 +1,109 @@
+<div class="patients-page animate-fade-in">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2>Gestión de Pacientes</h2>
+      <p>Registro y consulta de expedientes de pacientes en el Consultorio Dental DI-LUCCA</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="ri-user-add-line"></i>
+      <span>Nuevo Paciente</span>
+    </button>
+  </div>
+
+  <!-- Filters & Search Bar -->
+  <div class="filter-bar card">
+    <div class="search-box">
+      <i class="ri-search-line search-icon"></i>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar por nombre, apellido o número de documento..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+      />
+    </div>
+    <div class="active-filter">
+      <label>
+        <input type="checkbox" [(ngModel)]="activeOnly" (change)="loadPatients()" />
+        <span>Solo Pacientes Activos</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Patients Data Table -->
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="ri-loader-4-line spinner"></i>
+      <span>Cargando pacientes...</span>
+    </div>
+  } @else if (patients().length === 0) {
+    <div class="empty-state card">
+      <i class="ri-user-search-line"></i>
+      <h3>No se encontraron pacientes</h3>
+      <p>Intenta con otra búsqueda o registra un nuevo paciente en el sistema.</p>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Documento</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Fecha Nac.</th>
+            <th>Estado</th>
+            <th style="text-align: right;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (patient of patients(); track patient.id) {
+            <tr>
+              <td>
+                <div class="patient-name-cell">
+                  <div class="patient-avatar">{{ patient.firstName.charAt(0) }}{{ patient.lastName.charAt(0) }}</div>
+                  <div>
+                    <strong>{{ patient.firstName }} {{ patient.lastName }}</strong>
+                    <span class="patient-address" *ngIf="patient.address">{{ patient.address }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge badge-info">{{ patient.documentType }}</span>
+                <span class="doc-num">{{ patient.documentNumber }}</span>
+              </td>
+              <td>{{ patient.phone }}</td>
+              <td>{{ patient.email || 'N/A' }}</td>
+              <td>{{ patient.dateOfBirth || 'N/A' }}</td>
+              <td>
+                <span [class]="patient.active ? 'badge badge-success' : 'badge badge-danger'">
+                  {{ patient.active ? 'ACTIVO' : 'INACTIVO' }}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <div class="actions-cell">
+                  <button class="icon-btn primary" (click)="openEditModal(patient)" title="Editar Paciente">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                  <button class="icon-btn danger" *ngIf="patient.active" (click)="onDeactivate(patient)" title="Desactivar Paciente">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Modal Form Component -->
+  @if (showFormModal()) {
+    <app-patient-form
+      [patient]="selectedPatient()"
+      (saved)="onPatientSaved()"
+      (closed)="closeModal()"
+    ></app-patient-form>
+  }
+</div>

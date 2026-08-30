@@ -1,0 +1,141 @@
+.medical-records-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-header h2 { font-size: 1.5rem; color: var(--slate-900); }
+.page-header p { font-size: 0.9rem; color: var(--slate-500); }
+
+.read-only-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: default;
+}
+
+.filter-bar {
+  padding: 1.25rem;
+}
+
+.patient-search-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .patient-search-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.search-input-group, .patient-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.search-input-group label, .patient-selector label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.timeline-item {
+  padding: 1.75rem;
+  border-left: 4px solid var(--primary);
+}
+
+.record-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.entry-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+.total-tag {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--slate-900);
+  background: var(--slate-100);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-sm);
+}
+
+.diagnosis-box, .notes-box, .items-table-wrapper {
+  margin-bottom: 1rem;
+}
+
+.diagnosis-box h4, .notes-box h4, .items-table-wrapper h4 {
+  font-size: 0.9rem;
+  color: var(--slate-600);
+  margin-bottom: 0.35rem;
+}
+
+.diagnosis-box p, .notes-box p {
+  font-size: 0.95rem;
+  color: var(--slate-800);
+  line-height: 1.5;
+}
+
+.inner-table {
+  margin-top: 0.5rem;
+  background: var(--slate-50);
+}
+
+.inner-table th { background: var(--slate-100); font-size: 0.8rem; }
+.inner-table td { font-size: 0.85rem; }
+
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+.loading-state, .empty-state {
+  padding: 3rem;
+  text-align: center;
+  color: var(--slate-500);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.empty-state i { font-size: 3rem; color: var(--slate-300); }
+.spinner { font-size: 2rem; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

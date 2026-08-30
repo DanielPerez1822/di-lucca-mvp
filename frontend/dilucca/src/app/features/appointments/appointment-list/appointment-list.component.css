@@ -1,0 +1,96 @@
+.appointments-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-header h2 { font-size: 1.5rem; color: var(--slate-900); }
+.page-header p { font-size: 0.9rem; color: var(--slate-500); }
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--slate-700);
+}
+
+.filter-group .form-control {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.time-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.time-cell strong {
+  color: var(--slate-800);
+}
+
+.time-range {
+  font-size: 0.8rem;
+  color: var(--slate-500);
+}
+
+.patient-id-badge {
+  font-family: monospace;
+  background: var(--slate-100);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: var(--slate-700);
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--slate-100);
+  color: var(--slate-600);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.icon-btn.primary:hover { background: var(--primary-light); color: var(--primary); }
+.icon-btn.danger:hover { background: #fee2e2; color: #dc2626; }
+
+.loading-state, .empty-state {
+  padding: 3rem;
+  text-align: center;
+  color: var(--slate-500);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.empty-state i { font-size: 3rem; color: var(--slate-300); }
+.spinner { font-size: 2rem; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

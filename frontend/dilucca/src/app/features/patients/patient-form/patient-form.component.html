@@ -1,0 +1,78 @@
+<div class="modal-overlay animate-fade-in" (click)="onClose()">
+  <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ patient ? 'Editar Paciente' : 'Registrar Nuevo Paciente' }}</h3>
+      <button type="button" class="close-btn" (click)="onClose()"><i class="ri-close-line"></i></button>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert alert-danger">
+        <i class="ri-error-warning-line"></i>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="firstName">Nombre *</label>
+          <input id="firstName" type="text" class="form-control" placeholder="Juan" formControlName="firstName" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lastName">Apellido *</label>
+          <input id="lastName" type="text" class="form-control" placeholder="Pérez" formControlName="lastName" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="documentType">Tipo Documento *</label>
+          <select id="documentType" class="form-control" formControlName="documentType" [attr.disabled]="patient ? true : null">
+            <option value="CC">Cédula de Ciudadanía (CC)</option>
+            <option value="CE">Cédula de Extranjería (CE)</option>
+            <option value="PA">Pasaporte (PA)</option>
+            <option value="TI">Tarjeta de Identidad (TI)</option>
+            <option value="RC">Registro Civil (RC)</option>
+            <option value="OTHER">Otro Documento</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="documentNumber">Número Documento *</label>
+          <input id="documentNumber" type="text" class="form-control" placeholder="1075123456" formControlName="documentNumber" [readonly]="!!patient" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Teléfono *</label>
+          <input id="phone" type="text" class="form-control" placeholder="+573001234567" formControlName="phone" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Correo Electrónico</label>
+          <input id="email" type="email" class="form-control" placeholder="paciente@email.com" formControlName="email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="dateOfBirth">Fecha de Nacimiento</label>
+          <input id="dateOfBirth" type="date" class="form-control" formControlName="dateOfBirth" />
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label" for="address">Dirección de Residencia</label>
+          <input id="address" type="text" class="form-control" placeholder="Calle 10 # 15-20, Bogotá" formControlName="address" />
+        </div>
+      </div>
+
+      <div class="modal-footer mt-4">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading() || patientForm.invalid">
+          @if (loading()) {
+            <i class="ri-loader-4-line spinner"></i>
+            <span>Guardando...</span>
+          } @else {
+            <span>{{ patient ? 'Actualizar Paciente' : 'Guardar Paciente' }}</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
