@@ -1,118 +1,217 @@
 <div class="dashboard-page animate-fade-in">
-  <!-- Welcome Hero Banner -->
-  <div class="hero-banner">
-    <div class="hero-content">
-      <h1>¡Bienvenido de nuevo, {{ userFirstName() }}! 👋</h1>
-      <p>Panel de control del Consultorio Dental DI-LUCCA. Gestiona tus citas, pacientes y registros clínicos fácilmente.</p>
-    </div>
-    <div class="hero-badge">
-      <i class="ri-heart-pulse-fill"></i>
-      <span>DI-LUCCA System Active</span>
-    </div>
-  </div>
 
-  <!-- Quick Metrics Cards -->
-  <div class="metrics-grid">
-    <div class="metric-card card">
-      <div class="metric-icon primary">
-        <i class="ri-user-heart-line"></i>
+  <!-- ===================== ADMIN ANALYTICS VIEW ===================== -->
+  @if (isAdmin()) {
+
+    <!-- Hero -->
+    <div class="hero-banner">
+      <div class="hero-content">
+        <h1>📊 Panel de Análisis — DI-LUCCA</h1>
+        <p>Visión completa del rendimiento del consultorio: citas, pacientes y facturación en tiempo real.</p>
       </div>
-      <div class="metric-data">
-        <span class="label">Pacientes Registrados</span>
-        <h3>Gestión Activa</h3>
+      <div class="hero-badge">
+        <i class="ri-admin-line"></i>
+        <span>Vista Administrador</span>
       </div>
     </div>
 
-    <div class="metric-card card">
-      <div class="metric-icon secondary">
-        <i class="ri-pulse-line"></i>
+    @if (loading()) {
+      <div class="loading-full">
+        <i class="ri-loader-4-line spinner"></i>
+        <span>Cargando datos del consultorio...</span>
       </div>
-      <div class="metric-data">
-        <span class="label">Catálogo Dental</span>
-        <h3>9 Procedimientos</h3>
+    } @else {
+
+      <!-- ─── Date Range Filter ─── -->
+      <div class="filter-card card">
+        <div class="filter-header">
+          <i class="ri-calendar-2-line"></i>
+          <h3>Filtrar Citas por Rango de Fechas</h3>
+        </div>
+        <div class="filter-controls">
+          <div class="filter-group">
+            <label for="rangeStart">Desde</label>
+            <input id="rangeStart" type="date" class="form-control" [(ngModel)]="rangeStart"/>
+          </div>
+          <div class="filter-group">
+            <label for="rangeEnd">Hasta</label>
+            <input id="rangeEnd" type="date" class="form-control" [(ngModel)]="rangeEnd"/>
+          </div>
+          <div class="filter-group">
+            <label for="selectedMonth">Mes de Ingresos</label>
+            <input id="selectedMonth" type="month" class="form-control" [(ngModel)]="selectedMonth"/>
+          </div>
+          <button class="btn btn-primary" (click)="applyDateRange()">
+            <i class="ri-search-2-line"></i> Actualizar
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── KPI Cards ─── -->
+      <div class="kpi-grid">
+        <!-- Citas en rango -->
+        <div class="kpi-card card">
+          <div class="kpi-icon appointments">
+            <i class="ri-calendar-check-line"></i>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-label">Citas en el Rango</span>
+            <div class="kpi-value">{{ filteredAppointmentsCount() }}</div>
+            <span class="kpi-sub">{{ rangeStart | date:'dd/MM/yy' }} – {{ rangeEnd | date:'dd/MM/yy' }}</span>
+          </div>
+        </div>
+
+        <!-- Pacientes registrados -->
+        <div class="kpi-card card">
+          <div class="kpi-icon patients">
+            <i class="ri-user-heart-line"></i>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-label">Pacientes Registrados</span>
+            <div class="kpi-value">{{ totalPatients() }}</div>
+            <span class="kpi-sub">Total acumulado en el sistema</span>
+          </div>
+        </div>
+
+        <!-- Ingresos del mes -->
+        <div class="kpi-card card">
+          <div class="kpi-icon revenue">
+            <i class="ri-money-dollar-circle-line"></i>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-label">Ingresos del Mes</span>
+            <div class="kpi-value">${{ monthlyRevenue() | number:'1.0-0' }}</div>
+            <span class="kpi-sub">COP — Facturas cobradas en {{ selectedMonth }}</span>
+          </div>
+        </div>
+
+        <!-- Facturas pendientes -->
+        <div class="kpi-card card">
+          <div class="kpi-icon pending">
+            <i class="ri-file-warning-line"></i>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-label">Facturas Pendientes</span>
+            <div class="kpi-value">{{ pendingInvoices() }}</div>
+            <span class="kpi-sub">Sin cobrar o cobradas parcialmente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Weekly Activity Chart ─── -->
+      <div class="chart-card card">
+        <div class="chart-header">
+          <div>
+            <h3><i class="ri-bar-chart-2-line"></i> Actividad Semanal — Citas por Día</h3>
+            <p>Últimos 7 días del sistema</p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas #chartCanvas class="activity-chart"></canvas>
+        </div>
+        @if (noWeeklyActivity) {
+          <div class="chart-empty">
+            <i class="ri-bar-chart-line"></i>
+            <span>Sin citas registradas en los últimos 7 días</span>
+          </div>
+        }
+      </div>
+
+      <!-- ─── Quick Links ─── -->
+      <div class="section-title">
+        <h2>Accesos Rápidos</h2>
+        <p>Gestiona los módulos del consultorio</p>
+      </div>
+      <div class="modules-grid">
+        <a routerLink="/patients" class="module-card card">
+          <div class="module-header">
+            <div class="icon-box"><i class="ri-user-add-line"></i></div>
+            <i class="ri-arrow-right-up-line link-icon"></i>
+          </div>
+          <h3>Pacientes</h3>
+          <p>Registro y gestión de expedientes de pacientes.</p>
+        </a>
+        <a routerLink="/calendar" class="module-card card">
+          <div class="module-header">
+            <div class="icon-box"><i class="ri-calendar-line"></i></div>
+            <i class="ri-arrow-right-up-line link-icon"></i>
+          </div>
+          <h3>Calendario y Citas</h3>
+          <p>Agenda semanal, agendamiento y seguimiento de citas.</p>
+        </a>
+        <a routerLink="/invoices" class="module-card card">
+          <div class="module-header">
+            <div class="icon-box"><i class="ri-cash-line"></i></div>
+            <i class="ri-arrow-right-up-line link-icon"></i>
+          </div>
+          <h3>Facturación</h3>
+          <p>Gestión de facturas, pagos y envíos por correo.</p>
+        </a>
+        <a routerLink="/user-management" class="module-card card">
+          <div class="module-header">
+            <div class="icon-box"><i class="ri-shield-user-line"></i></div>
+            <i class="ri-arrow-right-up-line link-icon"></i>
+          </div>
+          <h3>Gestión de Usuarios</h3>
+          <p>Crear y administrar cuentas de dentistas y asistentes.</p>
+        </a>
+      </div>
+    }
+
+  }
+
+  <!-- ===================== NON-ADMIN WELCOME VIEW ===================== -->
+  @else {
+    <div class="hero-banner">
+      <div class="hero-content">
+        <h1>¡Bienvenido de nuevo, {{ userFirstName() }}! 👋</h1>
+        <p>Panel de control del Consultorio Dental DI-LUCCA. Gestiona tus citas, pacientes y registros clínicos fácilmente.</p>
+      </div>
+      <div class="hero-badge">
+        <i class="ri-heart-pulse-fill"></i>
+        <span>DI-LUCCA System Active</span>
       </div>
     </div>
 
-    <div class="metric-card card">
-      <div class="metric-icon accent">
-        <i class="ri-calendar-check-line"></i>
-      </div>
-      <div class="metric-data">
-        <span class="label">Horarios & Disponibilidad</span>
-        <h3>Slots en Tiempo Real</h3>
-      </div>
+    <div class="section-title mt-4">
+      <h2>Módulos del Sistema</h2>
+      <p>Selecciona una opción para comenzar a trabajar</p>
     </div>
 
-    <div class="metric-card card">
-      <div class="metric-icon success">
-        <i class="ri-refund-2-line"></i>
-      </div>
-      <div class="metric-data">
-        <span class="label">Facturación & Pagos</span>
-        <h3>Recibos por Correo</h3>
-      </div>
+    <div class="modules-grid">
+      <a routerLink="/patients" class="module-card card">
+        <div class="module-header">
+          <div class="icon-box"><i class="ri-user-add-line"></i></div>
+          <i class="ri-arrow-right-up-line link-icon"></i>
+        </div>
+        <h3>Registro de Pacientes</h3>
+        <p>Creación, edición y listado de pacientes de la clínica.</p>
+      </a>
+      <a routerLink="/calendar" class="module-card card">
+        <div class="module-header">
+          <div class="icon-box"><i class="ri-calendar-line"></i></div>
+          <i class="ri-arrow-right-up-line link-icon"></i>
+        </div>
+        <h3>Calendario y Citas</h3>
+        <p>Agenda semanal y agendamiento de citas.</p>
+      </a>
+      <a routerLink="/medical-records" class="module-card card">
+        <div class="module-header">
+          <div class="icon-box"><i class="ri-file-text-line"></i></div>
+          <i class="ri-arrow-right-up-line link-icon"></i>
+        </div>
+        <h3>Historial Médico</h3>
+        <p>Registro de atenciones, diagnósticos y tratamientos.</p>
+      </a>
+      <a routerLink="/invoices" class="module-card card">
+        <div class="module-header">
+          <div class="icon-box"><i class="ri-cash-line"></i></div>
+          <i class="ri-arrow-right-up-line link-icon"></i>
+        </div>
+        <h3>Facturación y Pagos</h3>
+        <p>Recibos y envío de facturas al paciente.</p>
+      </a>
     </div>
-  </div>
+  }
 
-  <!-- Quick Access Module Cards -->
-  <div class="section-title mt-4">
-    <h2>Módulos del Sistema</h2>
-    <p>Selecciona una opción para comenzar a trabajar</p>
-  </div>
-
-  <div class="modules-grid">
-    <a routerLink="/patients" class="module-card card">
-      <div class="module-header">
-        <div class="icon-box"><i class="ri-user-add-line"></i></div>
-        <i class="ri-arrow-right-up-line link-icon"></i>
-      </div>
-      <h3>Registro de Pacientes</h3>
-      <p>Creación, edición y listado de pacientes de la clínica.</p>
-    </a>
-
-    <a routerLink="/procedures" class="module-card card">
-      <div class="module-header">
-        <div class="icon-box"><i class="ri-health-book-line"></i></div>
-        <i class="ri-arrow-right-up-line link-icon"></i>
-      </div>
-      <h3>Procedimientos Dentales</h3>
-      <p>Catálogo de tarifas, duraciones y descripción de servicios.</p>
-    </a>
-
-    <a routerLink="/schedules" class="module-card card">
-      <div class="module-header">
-        <div class="icon-box"><i class="ri-calendar-event-line"></i></div>
-        <i class="ri-arrow-right-up-line link-icon"></i>
-      </div>
-      <h3>Horarios de Odontólogos</h3>
-      <p>Configuración semanal de agenda y generación automática de slots.</p>
-    </a>
-
-    <a routerLink="/appointments" class="module-card card">
-      <div class="module-header">
-        <div class="icon-box"><i class="ri-time-line"></i></div>
-        <i class="ri-arrow-right-up-line link-icon"></i>
-      </div>
-      <h3>Agendamiento de Citas</h3>
-      <p>Reserva, reagendamiento y notificación por email al paciente.</p>
-    </a>
-
-    <a routerLink="/medical-records" class="module-card card">
-      <div class="module-header">
-        <div class="icon-box"><i class="ri-file-text-line"></i></div>
-        <i class="ri-arrow-right-up-line link-icon"></i>
-      </div>
-      <h3>Historial Médico Clínico</h3>
-      <p>Registro de atenciones, odontograma por diente y diagnósticos.</p>
-    </a>
-
-    <a routerLink="/invoices" class="module-card card">
-      <div class="module-header">
-        <div class="icon-box"><i class="ri-cash-line"></i></div>
-        <i class="ri-arrow-right-up-line link-icon"></i>
-      </div>
-      <h3>Facturación y Pagos</h3>
-      <p>Recibos en efectivo, tarjeta, transferencia y envío de PDF/HTML por correo.</p>
-    </a>
-  </div>
 </div>
