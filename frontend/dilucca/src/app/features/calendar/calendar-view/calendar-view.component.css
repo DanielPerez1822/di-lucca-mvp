@@ -72,20 +72,20 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #0284c7;
+  background: var(--primary);
   color: #ffffff;
   border: none;
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 6px 14px rgba(30, 162, 150, 0.25);
   transition: all 0.2s ease;
 }
 
 .btn-new-appointment:hover {
-  background: #0369a1;
+  background: var(--primary-hover);
   transform: translateY(-1px);
 }
 
@@ -185,7 +185,7 @@
 }
 
 .month-day-cell:hover {
-  background: #f0f9ff;
+  background: #EEF9F8;
 }
 
 .month-day-cell.outside-month {
@@ -194,7 +194,7 @@
 }
 
 .month-day-cell.today .day-number-badge {
-  background: #0284c7;
+  background: var(--primary);
   color: #ffffff;
   width: 24px;
   height: 24px;
@@ -205,8 +205,8 @@
 }
 
 .month-day-cell.selected-day {
-  border: 2px solid #0284c7 !important;
-  background: #e0f2fe;
+  border: 2px solid var(--primary) !important;
+  background: var(--primary-light);
 }
 
 .day-number-badge {
@@ -369,7 +369,7 @@
 .patient-name {
   font-weight: 700;
   font-size: 0.95rem;
-  color: #0f172a;
+  color: var(--slate-900);
 }
 
 .treatment-badge {
@@ -390,16 +390,16 @@
   padding: 6px 12px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #0284c7;
-  border: 1px solid #0284c7;
-  border-radius: 6px;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
   background: #ffffff;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .btn-assign-shift:hover {
-  background: #0284c7;
+  background: var(--primary);
   color: #ffffff;
 }
 
@@ -582,14 +582,14 @@
 }
 
 .patient-click-name {
-  color: #0f172a;
+  color: var(--slate-900);
   text-decoration: underline;
   font-size: 0.88rem;
 }
 
 .link-icon {
   font-size: 0.8rem;
-  color: #0284c7;
+  color: var(--primary);
 }
 
 .day-appts-card {
@@ -616,7 +616,7 @@
 }
 
 .link-hover:hover {
-  color: #0284c7;
+  color: var(--primary);
   text-decoration: underline;
 }
 
@@ -672,5 +672,5 @@
 
 .chip-patient-name:hover {
   text-decoration: underline;
-  color: #0284c7;
+  color: var(--primary);
 }

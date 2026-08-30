@@ -6,14 +6,14 @@
 
 /* =================== HERO =================== */
 .hero-banner {
-  background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: #ffffff;
   padding: 2.5rem 2rem;
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 8px 32px rgba(30, 64, 175, 0.35);
+  box-shadow: 0 8px 32px rgba(30, 162, 150, 0.35);
   position: relative;
   overflow: hidden;
 }
@@ -37,13 +37,13 @@
 }
 
 .hero-content p {
-  color: #93c5fd;
+  color: #D5EFEC;
   font-size: 0.95rem;
   max-width: 560px;
 }
 
 .hero-badge {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.14);
   backdrop-filter: blur(10px);
   padding: 0.65rem 1.25rem;
   border-radius: 99px;
@@ -52,8 +52,8 @@
   gap: 0.5rem;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #bfdbfe;
-  border: 1px solid rgba(255,255,255,0.15);
+  color: #E7F7F5;
+  border: 1px solid rgba(255,255,255,0.25);
   white-space: nowrap;
 }
 
@@ -66,7 +66,7 @@
   padding: 80px 24px;
   color: #64748b;
 }
-.spinner { font-size: 2.5rem; color: #3b82f6; animation: spin 0.9s linear infinite; }
+.spinner { font-size: 2.5rem; color: var(--primary); animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* =================== FILTER CARD =================== */
@@ -81,7 +81,7 @@
   margin-bottom: 1rem;
 }
 
-.filter-header i { font-size: 1.2rem; color: #3b82f6; }
+.filter-header i { font-size: 1.2rem; color: var(--primary); }
 .filter-header h3 { font-size: 1rem; color: #1e293b; font-weight: 700; }
 
 .filter-controls {
@@ -146,15 +146,15 @@
   flex-shrink: 0;
 }
 
-.kpi-icon.appointments { background: #dbeafe; color: #1d4ed8; }
-.kpi-icon.patients     { background: #d1fae5; color: #059669; }
-.kpi-icon.revenue      { background: #fef9c3; color: #ca8a04; }
-.kpi-icon.pending      { background: #fee2e2; color: #dc2626; }
+.kpi-icon.appointments { background: var(--primary-light); color: var(--teal-700); }
+.kpi-icon.patients     { background: #E3F3E6; color: #0F7B3A; }
+.kpi-icon.revenue      { background: #FDF3DC; color: #92600A; }
+.kpi-icon.pending      { background: #FEE9E7; color: #B34033; }
 
-.kpi-card:nth-child(1)::after { background: #3b82f6; }
-.kpi-card:nth-child(2)::after { background: #10b981; }
-.kpi-card:nth-child(3)::after { background: #eab308; }
-.kpi-card:nth-child(4)::after { background: #ef4444; }
+.kpi-card:nth-child(1)::after { background: var(--primary); }
+.kpi-card:nth-child(2)::after { background: #1AA34A; }
+.kpi-card:nth-child(3)::after { background: #EAB308; }
+.kpi-card:nth-child(4)::after { background: #B34033; }
 
 .kpi-body {
   display: flex;
@@ -173,7 +173,7 @@
 .kpi-value {
   font-size: 2rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--slate-900);
   line-height: 1.1;
 }
 
@@ -196,14 +196,14 @@
 
 .chart-header h3 {
   font-size: 1rem;
-  color: #1e293b;
+  color: var(--slate-800);
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.chart-header h3 i { color: #3b82f6; }
+.chart-header h3 i { color: var(--primary); }
 .chart-header p { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
 
 .chart-wrapper {
@@ -231,7 +231,7 @@
 .chart-empty i { font-size: 1.5rem; }
 
 /* =================== SECTION TITLE =================== */
-.section-title h2 { font-size: 1.3rem; color: #1e293b; }
+.section-title h2 { font-size: 1.3rem; color: var(--slate-800); }
 .section-title p  { font-size: 0.875rem; color: #94a3b8; }
 
 /* =================== MODULE CARDS =================== */
@@ -254,7 +254,7 @@
 .module-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 28px rgba(0,0,0,0.1);
-  border-color: #3b82f6;
+  border-color: var(--primary);
 }
 
 .module-header {
@@ -266,8 +266,8 @@
 .icon-box {
   width: 44px;
   height: 44px;
-  background: #eff6ff;
-  color: #3b82f6;
+  background: var(--primary-light);
+  color: var(--primary);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -275,9 +275,9 @@
   font-size: 1.3rem;
 }
 
-.link-icon { font-size: 1.2rem; color: #cbd5e1; transition: color 0.2s; }
-.module-card:hover .link-icon { color: #3b82f6; }
-.module-card h3 { font-size: 1rem; color: #1e293b; font-weight: 700; }
+.link-icon { font-size: 1.2rem; color: var(--slate-300); transition: color 0.2s; }
+.module-card:hover .link-icon { color: var(--primary); }
+.module-card h3 { font-size: 1rem; color: var(--slate-800); font-weight: 700; }
 .module-card p  { font-size: 0.83rem; color: #64748b; line-height: 1.45; }
 
 /* =================== FORM CONTROLS =================== */
@@ -291,14 +291,14 @@
   outline: none;
   transition: border-color 0.2s;
 }
-.form-control:focus { border-color: #3b82f6; background: white; }
+.form-control:focus { border-color: var(--primary); background: white; }
 
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 9px 18px;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -307,10 +307,11 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  background: var(--primary);
   color: white;
+  box-shadow: 0 6px 14px rgba(30, 162, 150, 0.25);
 }
-.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
 
 .mt-4 { margin-top: 1.5rem; }
 

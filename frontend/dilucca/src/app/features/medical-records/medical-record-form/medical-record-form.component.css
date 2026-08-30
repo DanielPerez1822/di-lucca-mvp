@@ -97,7 +97,7 @@
   font-size: 1rem;
 }
 
-.icon-btn.danger:hover { background: #fee2e2; color: #dc2626; }
+.icon-btn.danger:hover { background: #FEE9E7; color: #B34033; }
 
 .modal-footer {
   display: flex;
@@ -106,8 +106,8 @@
 }
 
 .alert-danger {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background-color: #FEE9E7;
+  color: #B34033;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-sm);
   margin-bottom: 1rem;

@@ -152,8 +152,8 @@
   margin-bottom: 1.25rem;
 }
 
-.alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-.alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.alert-success { background: #E3F3E6; color: #0F7B3A; border: 1px solid #C4E6CB; }
+.alert-danger { background: #FEE9E7; color: #B34033; border: 1px solid #F5C6BD; }
 
 .w-100 { width: 100%; }
 .mt-3 { margin-top: 1rem; }

@@ -207,8 +207,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       const y = padT + chartH - barH;
 
       const grad = ctx.createLinearGradient(x, y, x, padT + chartH);
-      grad.addColorStop(0, '#3b82f6');
-      grad.addColorStop(1, '#1e40af');
+      grad.addColorStop(0, '#1EA296');
+      grad.addColorStop(1, '#12756C');
       ctx.fillStyle = grad;
 
       // Rounded top corners
@@ -226,7 +226,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
       // Count label on top
       if (d.count > 0) {
-        ctx.fillStyle = '#1e40af';
+        ctx.fillStyle = '#12756C';
         ctx.font = 'bold 12px Arial';
         ctx.textAlign = 'center';
         ctx.fillText(String(d.count), x + barW / 2, y - 6);

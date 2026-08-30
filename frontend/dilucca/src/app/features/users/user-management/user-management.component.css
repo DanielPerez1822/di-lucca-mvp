@@ -289,12 +289,12 @@
 }
 
 .admin-warning-box {
-  background: #eff6ff;
-  border-left: 4px solid #3b82f6;
+  background: var(--primary-light);
+  border-left: 4px solid var(--primary);
   padding: 10px 14px;
   border-radius: 6px;
   font-size: 0.83rem;
-  color: #1e40af;
+  color: var(--teal-700);
   display: flex;
   align-items: flex-start;
   gap: 8px;

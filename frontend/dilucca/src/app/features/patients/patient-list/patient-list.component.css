@@ -103,7 +103,7 @@
 }
 
 .icon-btn.primary:hover { background: var(--primary-light); color: var(--primary); }
-.icon-btn.danger:hover { background: #fee2e2; color: #dc2626; }
+.icon-btn.danger:hover { background: #FEE9E7; color: #B34033; }
 
 .loading-state, .empty-state {
   padding: 3rem;
