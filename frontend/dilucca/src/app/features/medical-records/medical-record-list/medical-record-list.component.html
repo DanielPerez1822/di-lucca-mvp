@@ -69,10 +69,11 @@
             <div class="entry-date">
               <i class="ri-calendar-line"></i>
               <strong>{{ record.entryDate | date:'fullDate':'':'es-CO' }}</strong>
+              <span class="dentist-tag"><i class="ri-stethoscope-line"></i> {{ getDentistName(record.dentistId) }}</span>
             </div>
             <div class="header-right">
-              <button class="btn btn-secondary btn-sm" (click)="generateInvoice(record)" title="Generar / Ver Factura de esta atención">
-                <i class="ri-receipt-line"></i> Generar Factura
+              <button class="btn btn-invoice btn-sm" (click)="openInvoiceModal(record)" title="Ver detalle y descargar factura">
+                <i class="ri-receipt-2-line"></i> Ver Factura
               </button>
               <div class="total-tag">
                 Total: ${{ record.totalAmount | number:'1.0-0' }} COP
@@ -130,5 +131,15 @@
       (saved)="onRecordSaved()"
       (closed)="closeModal()"
     ></app-medical-record-form>
+  }
+
+  <!-- Invoice Detail Modal -->
+  @if (showInvoiceModal() && invoiceModalRecord() && selectedPatient) {
+    <app-invoice-detail-modal
+      [medicalRecordId]="invoiceModalRecord()!.id"
+      [patient]="selectedPatient!"
+      [dentistName]="getDentistName(invoiceModalRecord()!.dentistId)"
+      (closed)="closeInvoiceModal()"
+    ></app-invoice-detail-modal>
   }
 </div>

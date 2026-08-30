@@ -139,3 +139,32 @@
 .empty-state i { font-size: 3rem; color: var(--slate-300); }
 .spinner { font-size: 2rem; animation: spin 1s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.btn-invoice {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-invoice:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.dentist-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+  border-radius: 99px;
+  padding: 2px 10px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+

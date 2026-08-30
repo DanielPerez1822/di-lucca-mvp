@@ -1,0 +1,162 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-left">
+        <i class="ri-receipt-2-line"></i>
+        <div>
+          <h2>Detalle de Factura</h2>
+          <p>Historia Clínica — {{ patient.firstName }} {{ patient.lastName }}</p>
+        </div>
+      </div>
+      <button class="close-btn" (click)="close()"><i class="ri-close-line"></i></button>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="loading-state">
+        <i class="ri-loader-4-line spinner"></i>
+        <span>Cargando factura...</span>
+      </div>
+    }
+
+    <!-- Error State -->
+    @else if (error()) {
+      <div class="error-state">
+        <i class="ri-error-warning-line"></i>
+        <p>{{ error() }}</p>
+        <button class="btn btn-secondary" (click)="loadInvoice()">Reintentar</button>
+      </div>
+    }
+
+    <!-- Invoice Content -->
+    @else if (invoice()) {
+      <div class="invoice-body">
+
+        <!-- Meta Row -->
+        <div class="invoice-meta-row">
+          <div class="invoice-num-block">
+            <span class="label">Número de Factura</span>
+            <span class="value big"># {{ invoice()!.invoiceNumber }}</span>
+          </div>
+          <div class="invoice-date-block">
+            <span class="label">Fecha de Emisión</span>
+            <span class="value">{{ invoice()!.issueDate | date:'fullDate':'':'es-CO' }}</span>
+          </div>
+          <div>
+            <span class="label">Estado</span>
+            <span class="status-badge" [class]="'status-' + invoice()!.status">
+              {{ statusLabel(invoice()!.status) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Parties -->
+        <div class="parties-grid">
+          <div class="party-card">
+            <div class="party-label"><i class="ri-user-3-line"></i> Paciente</div>
+            <div class="party-name">{{ patient.firstName }} {{ patient.lastName }}</div>
+            <div class="party-detail">{{ patient.documentType }}: {{ patient.documentNumber }}</div>
+            @if (patient.phone) { <div class="party-detail">📞 {{ patient.phone }}</div> }
+            @if (patient.email) { <div class="party-detail">✉ {{ patient.email }}</div> }
+          </div>
+          <div class="party-card">
+            <div class="party-label"><i class="ri-stethoscope-line"></i> Odontólogo</div>
+            <div class="party-name">{{ dentistName }}</div>
+            <div class="party-detail">Consultorio DI-LUCCA</div>
+          </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="items-section">
+          <h4 class="section-title"><i class="ri-list-check"></i> Procedimientos Facturados</h4>
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Descripción</th>
+                <th class="center">Cant.</th>
+                <th class="right">Precio Unit.</th>
+                <th class="right">Total Línea</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (invoice()!.items && invoice()!.items.length > 0) {
+                @for (item of invoice()!.items; track item.id) {
+                  <tr>
+                    <td>{{ item.description }}</td>
+                    <td class="center">{{ item.quantity }}</td>
+                    <td class="right">${{ item.unitPrice | number:'1.0-0' }} COP</td>
+                    <td class="right bold">${{ item.lineTotal | number:'1.0-0' }} COP</td>
+                  </tr>
+                }
+              } @else {
+                <tr><td colspan="4" class="empty-row">Sin ítems registrados</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Totals -->
+        <div class="totals-section">
+          <div class="totals-box">
+            <div class="totals-row">
+              <span>Subtotal</span>
+              <span>${{ invoice()!.subtotal | number:'1.0-0' }} COP</span>
+            </div>
+            @if (invoice()!.taxAmount) {
+              <div class="totals-row">
+                <span>IVA</span>
+                <span>${{ invoice()!.taxAmount | number:'1.0-0' }} COP</span>
+              </div>
+            }
+            @if (invoice()!.discountAmount) {
+              <div class="totals-row discount">
+                <span>Descuento</span>
+                <span>-${{ invoice()!.discountAmount | number:'1.0-0' }} COP</span>
+              </div>
+            }
+            <div class="totals-row grand-total">
+              <span>TOTAL</span>
+              <span>${{ invoice()!.totalAmount | number:'1.0-0' }} COP</span>
+            </div>
+            <div class="totals-row paid">
+              <span>Pagado</span>
+              <span>${{ invoice()!.paidAmount | number:'1.0-0' }} COP</span>
+            </div>
+            <div class="totals-row balance">
+              <span>Saldo pendiente</span>
+              <span>${{ (invoice()!.totalAmount - invoice()!.paidAmount) | number:'1.0-0' }} COP</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Actions Footer -->
+      <div class="modal-actions">
+        @if (emailSent()) {
+          <div class="success-badge">
+            <i class="ri-check-double-line"></i> Correo enviado exitosamente
+          </div>
+        }
+        <div class="action-buttons">
+          <button class="btn btn-secondary" (click)="close()">
+            <i class="ri-close-line"></i> Cerrar
+          </button>
+          <button class="btn btn-email" (click)="sendEmail()" [disabled]="sendingEmail()">
+            @if (sendingEmail()) {
+              <i class="ri-loader-4-line spinner-sm"></i> Enviando...
+            } @else {
+              <i class="ri-mail-send-line"></i> Enviar al Correo
+            }
+          </button>
+          <button class="btn btn-primary" (click)="downloadPdf()">
+            <i class="ri-file-pdf-2-line"></i> Descargar PDF
+          </button>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>
