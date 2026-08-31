@@ -1,17 +1,25 @@
-<div class="login-page">
-  <div class="login-bg-shapes">
-    <div class="shape shape-1"></div>
-    <div class="shape shape-2"></div>
-  </div>
+<div class="auth-shell">
+  <header class="public-auth-header">
+    <a class="public-auth-brand" routerLink="/" aria-label="Ir al inicio de DI LUCCA">
+      <img src="assets/dilucca-logo-transparent.png" alt="DI LUCCA Dental Care & Technology" />
+    </a>
 
-  <div class="login-card glass-card animate-fade-in">
-    <div class="brand-header">
-      <div class="brand-logo">
-        <i class="ri-tooth-fill"></i>
+    <nav class="public-auth-nav" aria-label="Navegación principal">
+      <a routerLink="/login">Citas</a>
+      <a href="#">Servicios</a>
+      <a href="#">Contacto</a>
+    </nav>
+
+    <a class="auth-header-cta" routerLink="/login">Login</a>
+  </header>
+
+  <main class="auth-main">
+    <div class="login-card public-auth-card animate-fade-in">
+      <div class="brand-header">
+        <img class="brand-logo" src="assets/dilucca-logo-transparent.png" alt="DI LUCCA Dental Care & Technology" />
+        <h1>Ingreso al Sistema</h1>
+        <p class="subtitle">Ingresa para gestionar tus citas odontológicas.</p>
       </div>
-      <h1>DI-LUCCA</h1>
-      <p class="subtitle">Consultorio Dental Especializado</p>
-    </div>
 
     @if (errorMessage()) {
       <div class="alert alert-danger animate-fade-in">
@@ -83,8 +91,15 @@
       </button>
     </form>
 
-    <div class="login-footer">
-      <p>© 2026 Consultorio Dental DI-LUCCA. Todos los derechos reservados.</p>
     </div>
-  </div>
+  </main>
+
+  <footer class="public-auth-footer">
+    <p><strong>DI LUCCA</strong><span>© 2026 DI LUCCA. Todos los derechos reservados.</span></p>
+    <nav aria-label="Enlaces legales">
+      <a href="#">Privacidad</a>
+      <a href="#">Términos</a>
+      <a href="#">Cookies</a>
+    </nav>
+  </footer>
 </div>

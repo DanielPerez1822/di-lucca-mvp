@@ -286,3 +286,165 @@ h1, h2, h3, h4, h5, h6 {
 .animate-fade-in {
   animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+/* Public authentication views */
+.auth-shell {
+  display: grid;
+  min-height: 100vh;
+  grid-template-rows: 64px minmax(0, 1fr) 76px;
+  background: #f7fafb;
+}
+
+.public-auth-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  min-height: 64px;
+  padding: 0.35rem clamp(1.5rem, 3vw, 3rem);
+  border-bottom: 1px solid #edf1f4;
+  background: #fff;
+}
+
+.public-auth-brand {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.public-auth-brand img {
+  display: block;
+  width: 78px;
+  height: auto;
+}
+
+.public-auth-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3.25rem);
+}
+
+.public-auth-nav a,
+.public-auth-footer a {
+  color: #005b5b;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.public-auth-nav a:hover,
+.public-auth-footer a:hover {
+  color: #159e96;
+}
+
+.auth-header-cta {
+  margin-left: auto;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  background: #1da398;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-header-cta:hover {
+  background: #138d85;
+}
+
+.auth-main {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: clamp(1.75rem, 4vw, 3rem) clamp(2rem, 8vw, 9rem);
+  background:
+    linear-gradient(90deg, rgba(245, 252, 253, 0.16) 0%, rgba(245, 252, 253, 0.03) 58%, rgba(245, 252, 253, 0.02) 100%),
+    url('/assets/auth-clinic-background.png') center / cover no-repeat;
+}
+
+.public-auth-card {
+  width: min(100%, 390px);
+  padding: 2rem 2.2rem;
+  border: 1px solid rgba(226, 232, 238, 0.9);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 30px rgba(17, 57, 70, 0.17);
+}
+
+.public-auth-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 76px;
+  padding: 1rem clamp(1.5rem, 3vw, 3rem);
+  background: #fff;
+  color: #005b5b;
+}
+
+.public-auth-footer p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.77rem;
+}
+
+.public-auth-footer strong {
+  color: #159e96;
+  font-size: 0.95rem;
+}
+
+.public-auth-footer nav {
+  display: flex;
+  gap: 1.75rem;
+}
+
+.public-auth-footer a {
+  color: #52647f;
+  font-weight: 500;
+}
+
+@media (max-width: 700px) {
+  .auth-shell {
+    grid-template-rows: 58px minmax(0, 1fr) auto;
+  }
+
+  .public-auth-header {
+    min-height: 58px;
+    padding: 0.3rem 1rem;
+  }
+
+  .public-auth-brand img {
+    width: 68px;
+  }
+
+  .public-auth-nav {
+    display: none;
+  }
+
+  .auth-header-cta {
+    padding: 0.48rem 0.85rem;
+  }
+
+  .auth-main {
+    justify-content: center;
+    min-height: calc(100vh - 58px);
+    padding: 2rem 1rem;
+    background-position: 61% center;
+  }
+
+  .public-auth-card {
+    padding: 1.75rem 1.35rem;
+  }
+
+  .public-auth-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .public-auth-footer nav {
+    gap: 1.2rem;
+  }
+}

@@ -14,8 +14,14 @@ import { MedicalRecordListComponent } from './features/medical-records/medical-r
 import { InvoiceListComponent } from './features/invoices/invoice-list/invoice-list.component';
 import { CalendarViewComponent } from './features/calendar/calendar-view/calendar-view.component';
 import { UserManagementComponent } from './features/users/user-management/user-management.component';
+import { WelcomeComponent } from './features/welcome/welcome.component';
 
 export const routes: Routes = [
+  {
+    path: '',
+    component: WelcomeComponent,
+    pathMatch: 'full'
+  },
   {
     path: 'login',
     component: LoginComponent
@@ -33,11 +39,6 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
       {
         path: 'dashboard',
         component: DashboardComponent
@@ -84,6 +85,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'login'
+    redirectTo: ''
   }
 ];
