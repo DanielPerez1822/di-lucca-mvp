@@ -9,7 +9,7 @@ import { User } from '../models/user.model';
 })
 export class ScheduleService {
 
-  private readonly API_URL = 'http://localhost:9000/api/schedules';
+  private readonly API_URL = '/api/schedules';
 
   constructor(private http: HttpClient) {}
 

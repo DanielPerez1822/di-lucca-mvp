@@ -8,7 +8,7 @@ import { CreateMedicalRecordRequest, MedicalRecord } from '../models/medical-rec
 })
 export class MedicalRecordService {
 
-  private readonly API_URL = 'http://localhost:9000/api/medical-records';
+  private readonly API_URL = '/api/medical-records';
 
   constructor(private http: HttpClient) {}
 

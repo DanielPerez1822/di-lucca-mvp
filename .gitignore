@@ -1,0 +1,7 @@
+.env
+*.env.local
+
+# Build outputs and dependencies
+frontend/dilucca/node_modules/
+frontend/dilucca/dist/
+backend/odontosys-api/target/

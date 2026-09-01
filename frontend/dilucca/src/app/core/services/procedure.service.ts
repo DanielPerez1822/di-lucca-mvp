@@ -8,7 +8,7 @@ import { CreateProcedureRequest, Procedure, UpdateProcedureRequest } from '../mo
 })
 export class ProcedureService {
 
-  private readonly API_URL = 'http://localhost:9000/api/procedures';
+  private readonly API_URL = '/api/procedures';
 
   constructor(private http: HttpClient) {}
 

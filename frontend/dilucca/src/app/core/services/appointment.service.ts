@@ -8,7 +8,7 @@ import { Appointment, AppointmentStatus, BookAppointmentRequest, CancelAppointme
 })
 export class AppointmentService {
 
-  private readonly API_URL = 'http://localhost:9000/api/appointments';
+  private readonly API_URL = '/api/appointments';
 
   constructor(private http: HttpClient) {}
 

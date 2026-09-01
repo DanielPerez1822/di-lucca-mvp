@@ -8,7 +8,7 @@ import { Invoice, InvoiceStatus, RegisterPaymentRequest } from '../models/invoic
 })
 export class InvoiceService {
 
-  private readonly API_URL = 'http://localhost:9000/api/invoices';
+  private readonly API_URL = '/api/invoices';
 
   constructor(private http: HttpClient) {}
 

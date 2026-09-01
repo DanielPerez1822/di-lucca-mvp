@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password"
                         ).permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         // Documentación API (Swagger UI / OpenAPI)
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
                         // Endpoints administrativos

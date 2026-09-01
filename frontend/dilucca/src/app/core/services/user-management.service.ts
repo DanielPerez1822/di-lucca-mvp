@@ -26,7 +26,7 @@ export interface UpdateUserPayload {
   providedIn: 'root'
 })
 export class UserManagementService {
-  private readonly apiUrl = 'http://localhost:9000/api/admin/users';
+  private readonly apiUrl = '/api/admin/users';
 
   constructor(private http: HttpClient) {}
 

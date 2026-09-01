@@ -8,7 +8,7 @@ import { CreatePatientRequest, Patient, UpdatePatientRequest } from '../models/p
 })
 export class PatientService {
 
-  private readonly API_URL = 'http://localhost:9000/api/patients';
+  private readonly API_URL = '/api/patients';
 
   constructor(private http: HttpClient) {}
 

@@ -10,7 +10,7 @@ import { User } from '../models/user.model';
 })
 export class AuthService {
 
-  private readonly API_URL = 'http://localhost:9000/api/auth';
+  private readonly API_URL = '/api/auth';
   private readonly TOKEN_KEY = 'dilucca_access_token';
   private readonly REFRESH_TOKEN_KEY = 'dilucca_refresh_token';
   private readonly USER_KEY = 'dilucca_user';
